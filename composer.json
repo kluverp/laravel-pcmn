@@ -1,0 +1,8 @@
+{
+    "name": "kluverp/laravel-pcmn",
+    "autoload": {
+        "psr-0" : {
+            "Kluverp\\Pcmn" : "src"
+        }
+    }
+}
