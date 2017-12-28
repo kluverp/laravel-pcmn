@@ -18,7 +18,9 @@ class CreateTables extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->rememberToken();
+            $table->string('auth_token');
+            $table->dateTime('auth_token_expiration');
+            $table->dateTime('last_visit');
             $table->timestamps();
         });
     }
