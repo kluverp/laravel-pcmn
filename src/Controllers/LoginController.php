@@ -4,6 +4,7 @@ namespace Kluverp\Pcmn;
 
 use Illuminate\Routing\Controller;
 use Kluverp\Pcmn\Requests\LoginRequest;
+use Kluverp\Pcmn\Models\User;
 
 /**
  * Class DashboardController
@@ -25,9 +26,20 @@ class LoginController extends Controller
      * Handle the form submit.
      *
      * @param LoginRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function post(LoginRequest $request)
     {
+        // check if we can find the user
+        if ($user = User::authenticate($request->email, bcrypt($request->password))) {
 
+            // update the user record
+            $user->login();
+
+            // put generated token in session
+            session()->put('pcmn.auth_token', $user->auth_token);
+        }
+
+        return redirect()->to(route('pcmn.login'))->withAlertDanger(__('pcmn::login.alerts.failure'));
     }
 }

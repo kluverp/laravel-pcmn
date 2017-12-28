@@ -27,6 +27,9 @@ class PcmnServiceProvider extends ServiceProvider
 
         // load views
         $this->loadViewsFrom(__DIR__ . '/../Views', 'pcmn');
+
+        // load translations
+        $this->loadTranslationsFrom(__DIR__ . '/../Translations', 'pcmn');
     }
 
     /**

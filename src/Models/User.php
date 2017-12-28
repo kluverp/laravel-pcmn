@@ -57,13 +57,15 @@ class User extends Authenticatable
     /**
      * Update the user record after successful login.
      *
-     * @param $authToken
+     * @return $this
      */
-    public function updateLogin($authToken)
+    public function login()
     {
         $this->last_visit = date('Y-m-d H:i:s');
-        $this->auth_token = $authToken;
+        $this->auth_token = str_random(100);
         $this->save();
+
+        return $this;
     }
 
     /**

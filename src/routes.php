@@ -3,6 +3,7 @@
 Route::group([
     'prefix' => config('pcmn.route_prefix') . '/login',
     'as' => 'pcmn.',
+    'middleware' => 'web'
 ], function () {
 
     // login
