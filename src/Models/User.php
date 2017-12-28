@@ -36,7 +36,7 @@ class User extends Authenticatable
     public static function bySession($token)
     {
         return self::where('auth_token', $token)
-            ->where('auth_token_expiration', '<', time())
+            ->where('auth_token_expiration', '<', date('Y-m-d H:i:s'))
             ->first();
     }
 
@@ -61,8 +61,18 @@ class User extends Authenticatable
      */
     public function updateLogin($authToken)
     {
-        $this->last_visit = date();
+        $this->last_visit = date('Y-m-d H:i:s');
         $this->auth_token = $authToken;
         $this->save();
+    }
+
+    /**
+     * Returns the table name with custom prefix.
+     *
+     * @return string
+     */
+    public function getTable()
+    {
+        return config('pcmn.table_prefix') . 'users';
     }
 }

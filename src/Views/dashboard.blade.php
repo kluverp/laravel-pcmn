@@ -1,4 +1,4 @@
-@extends('pcmn::_layout')
+@extends('pcmn::_layouts.default')
 
 @section('content')
 

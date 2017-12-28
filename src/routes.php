@@ -1,8 +1,22 @@
 <?php
 
-Route::prefix(config('pcmn.route_prefix'))->group(function () {
+Route::group([
+    'prefix' => config('pcmn.route_prefix') . '/login',
+    'as' => 'pcmn.',
+], function () {
+
+    // login
+    Route::get('/', 'Kluverp\Pcmn\LoginController@index')->name('login');
+    Route::post('/', 'Kluverp\Pcmn\LoginController@post')->name('login');
+});
+
+
+Route::group([
+    'prefix' => config('pcmn.route_prefix'),
+    'as' => 'pcmn.',
+    'middleware' => 'pcmn'
+], function () {
 
     // dashboard
-    Route::get('/', 'Kluverp\Pcmn\DashboardController@index');
-
+    Route::get('/', 'Kluverp\Pcmn\DashboardController@index')->name('dashboard');
 });
