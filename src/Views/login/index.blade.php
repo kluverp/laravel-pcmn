@@ -38,7 +38,14 @@
         </div>
 
         {{-- submit --}}
-        <button class="btn btn-lg btn-primary btn-block" type="submit">@lang('pcmn::login.form.btn_submit')</button>
+        <div class="form-group">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">@lang('pcmn::login.form.btn_submit')</button>
+        </div>
+
+        {{-- password forgotten link --}}
+        <div class="form-group">
+            <a href="{{ route('pcmn.login.forgotten') }}">@lang('pcmn::login.password_forgotten')</a>
+        </div>
 
     </form>
 

@@ -41,6 +41,17 @@ class User extends Authenticatable
     }
 
     /**
+     * Returns a user by email address.
+     *
+     * @param $email
+     * @return mixed
+     */
+    public static function byEmail($email)
+    {
+        return self::where('email', $email)->first();
+    }
+
+    /**
      * Authenticate the user bases on username and password combination.
      *
      * @param $username

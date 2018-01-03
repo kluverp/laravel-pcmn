@@ -15,12 +15,13 @@ class CreateTables extends Migration
     {
         Schema::create($this->getTableName('users'), function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->boolean('active')->default(0);
+            $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('auth_token');
-            $table->dateTime('auth_token_expiration');
-            $table->dateTime('last_visit');
+            $table->string('remember_token')->nullable();
+            $table->string('reset_token')->nullable();
+            $table->dateTime('last_visit')->nullable();
             $table->timestamps();
         });
     }

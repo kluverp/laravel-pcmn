@@ -5,13 +5,13 @@
 @endif
 
 @if (session('alert_success'))
-    <div class="alert alert_success" role="alert">
+    <div class="alert alert-success" role="alert">
         {{ session('alert_success') }}
     </div>
 @endif
 
 @if (session('alert_warning'))
-    <div class="alert alert_warning" role="alert">
+    <div class="alert alert-warning" role="alert">
         {{ session('alert_warning') }}
     </div>
 @endif
