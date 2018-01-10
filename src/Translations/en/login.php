@@ -3,6 +3,7 @@
 return [
     'title' => 'Sign in',
     'title_forgotten' => 'Password forgotten',
+    'title_reset' => 'Reset password',
     'password_forgotten' => 'Password forgotten?',
     'form' => [
         'email' => 'E-Mail address',
@@ -14,7 +15,9 @@ return [
         'btn_forgotten' => 'Send'
     ],
     'alerts' => [
-        'failure' => 'Unable to login'
+        'failure' => 'Unable to login',
+        'reset_failure' => 'Wachtwoord herstellen mislukt',
+        'reset_success' => 'Wacht hersteld'
     ],
     'texts' => [
         'forgotten' => 'Please fill in your e-mail address to receive a password reset email.'

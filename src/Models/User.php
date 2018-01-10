@@ -4,6 +4,7 @@ namespace Kluverp\Pcmn\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Hash;
 
 class User extends Authenticatable
 {
@@ -30,14 +31,11 @@ class User extends Authenticatable
     /**
      * Returns the user record by session token.
      *
-     * @param $token
      * @return mixed
      */
-    public static function bySession($token)
+    public static function bySession()
     {
-        return self::where('auth_token', $token)
-            ->where('auth_token_expiration', '<', date('Y-m-d H:i:s'))
-            ->first();
+        return self::where('id', session()->get('pcmn.user_id'))->first();
     }
 
     /**
@@ -60,9 +58,16 @@ class User extends Authenticatable
      */
     public static function authenticate($username, $password)
     {
-        return self::where('email', $username)
-            ->where('password', $password)
+        $user = self::where('email', $username)
+            ->where('active', 1)
             ->first();
+
+        // check the password
+        if (Hash::check($password, $user->password)) {
+            return $user;
+        }
+
+        return false;
     }
 
     /**
@@ -73,8 +78,16 @@ class User extends Authenticatable
     public function login()
     {
         $this->last_visit = date('Y-m-d H:i:s');
-        $this->auth_token = str_random(100);
+        $this->remember_token = str_random(100);
         $this->save();
+
+        // put generated token in session
+        session()->put('pcmn.user_id', $this->id);
+
+        dd('test');
+
+        // regenerate the session ID
+        session()->regenerate();
 
         return $this;
     }

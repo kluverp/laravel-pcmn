@@ -17,7 +17,7 @@ class Pcmn
     public function handle($request, Closure $next)
     {
         // check if authentication token is set, or show login
-        if (!$user = User::bySession(session('pcmn.auth_token'))) {
+        if (!$user = User::bySession()) {
             return redirect()->route('pcmn.login');
         }
 
