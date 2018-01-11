@@ -13,7 +13,7 @@ class CreateTables extends Migration
      */
     public function up()
     {
-        Schema::create($this->getTableName('users'), function (Blueprint $table) {
+        Schema::create($this->getTableName('user'), function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('active')->default(0);
             $table->string('name')->nullable();
@@ -33,7 +33,7 @@ class CreateTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists($this->getTableName('users'));
+        Schema::dropIfExists($this->getTableName('user'));
     }
 
     /**

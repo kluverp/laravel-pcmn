@@ -2,6 +2,8 @@
 laravel-pcmn
 
 
+php artisan vendor:publish --tag=public --force
+
 
 config/auth.php
 

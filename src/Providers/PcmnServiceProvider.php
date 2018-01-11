@@ -3,6 +3,8 @@
 namespace Kluverp\Pcmn\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Kluverp\Pcmn\Lib\Menu;
 
 class PcmnServiceProvider extends ServiceProvider
 {
@@ -15,7 +17,7 @@ class PcmnServiceProvider extends ServiceProvider
     {
         // publish the config file and assets
         $this->publishes([
-            __DIR__ . '/../config.php' => config_path('pcmn.php'),
+            __DIR__ . '/../config' => config_path('pcmn'),
             __DIR__ . '/../Assets/' => public_path('vendor/pcmn'),
         ], 'public');
 
@@ -41,7 +43,7 @@ class PcmnServiceProvider extends ServiceProvider
     {
         // merge the default config with published one
         $this->mergeConfigFrom(
-            __DIR__ . '/../config.php', 'pcmn'
+            __DIR__ . '/../config/config.php', 'pcmn/config'
         );
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Kluverp\Pcmn\Auth;
 
-use Illuminate\Routing\Controller;
+use Kluverp\Pcmn\BaseController;
 use Kluverp\Pcmn\Notifications\ForgotPassword;
 use Kluverp\Pcmn\Requests\ForgottenRequest;
 use Kluverp\Pcmn\Models\User;
@@ -11,8 +11,13 @@ use Kluverp\Pcmn\Models\User;
  * Class DashboardController
  * @package App\Http\Controllers
  */
-class ForgottenController extends Controller
+class ForgottenController extends BaseController
 {
+    /**
+     * @var string
+     */
+    protected $namespace = 'auth';
+
     /**
      * Show the Forgotten Password page.
      *
@@ -20,7 +25,9 @@ class ForgottenController extends Controller
      */
     public function index()
     {
-        return view('pcmn::login.forgotten');
+        return view($this->viewNamespace('forgotten'), [
+            'transNamespace' => $this->transNamespace()
+        ]);
     }
 
     /**

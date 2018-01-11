@@ -3,13 +3,13 @@
 namespace Kluverp\Pcmn;
 
 /**
- * Class DashboardController
- * @package App\Http\Controllers
+ * Class ContentController
+ * @package Kluverp\Pcmn
  */
-class DashboardController extends BaseController
+class ContentController extends BaseController
 {
     /**
-     * Load dashboard.
+     * Load content index.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */

@@ -84,8 +84,6 @@ class User extends Authenticatable
         // put generated token in session
         session()->put('pcmn.user_id', $this->id);
 
-        dd('test');
-
         // regenerate the session ID
         session()->regenerate();
 
@@ -99,6 +97,6 @@ class User extends Authenticatable
      */
     public function getTable()
     {
-        return config('pcmn.table_prefix') . 'users';
+        return config('pcmn.table_prefix') . 'user';
     }
 }

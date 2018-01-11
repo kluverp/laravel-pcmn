@@ -1,3 +1,23 @@
 main.container {
-    margin-top: 50px;
+    margin-top: 56px;
+    padding: 40px 0;
+}
+
+.container.auth {
+    padding: 40px 0;
+}
+
+/**
+ * Sidebar menu
+ */
+.list-group .list-group > .list-group-item {
+    padding-left: 2.5rem;
+    border-bottom: none;
+    border-top: none;
+    border-radius: 0;
+}
+
+.list-group .list-group > .list-group-item:first-child {
+    border-top: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 0;
 }

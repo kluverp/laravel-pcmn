@@ -22,9 +22,9 @@ class Pcmn
         }
 
         // check if authentication token is expired
-        if ($user->auth_token_expiration < date('Y-m-d H:i:s')) {
+        /*if ($user->auth_token_expiration < date('Y-m-d H:i:s')) {
             return redirect()->to('pcmn.login');
-        }
+        }*/
 
         return $next($request);
     }

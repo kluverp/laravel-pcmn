@@ -1,4 +1,4 @@
-@extends('_layout.base)
+@extends('pcmn::_layouts.base')
 
 @section('main')
 

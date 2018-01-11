@@ -21,6 +21,8 @@
         Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus.
     </p>
 
+    <hr>
+
     <form>
         <div class="form-group row">
             <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
@@ -69,6 +71,7 @@
                 </div>
             </div>
         </div>
+        <hr>
         <div class="form-group row">
             <div class="col-sm-2"></div>
             <div class="col-sm-10">

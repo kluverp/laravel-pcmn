@@ -2,7 +2,7 @@
 
 namespace Kluverp\Pcmn\Auth;
 
-use Illuminate\Routing\Controller;
+use Kluverp\Pcmn\BaseController;
 use Kluverp\Pcmn\Requests\LoginRequest;
 use Kluverp\Pcmn\Models\User;
 
@@ -10,8 +10,15 @@ use Kluverp\Pcmn\Models\User;
  * Class DashboardController
  * @package App\Http\Controllers
  */
-class LoginController extends Controller
+class LoginController extends BaseController
 {
+    /**
+     * The namespace.
+     *
+     * @var string
+     */
+    protected $namespace = 'auth';
+
     /**
      * Load login page.
      *
@@ -19,7 +26,9 @@ class LoginController extends Controller
      */
     public function index()
     {
-        return view('pcmn::login.index');
+        return view($this->viewNamespace('index'), [
+            'transNamespace' => $this->transNamespace()
+        ]);
     }
 
     /**
@@ -37,14 +46,17 @@ class LoginController extends Controller
             $user->login();
 
             // redirect user to dashboard
-            return redirect()->route('pcmn.dashboard');
+            return redirect()->route($this->routeNamespace('dashboard', true));
         }
 
-        return redirect()->to(route('pcmn.login'))->withAlertDanger(__('pcmn::login.alerts.failure'));
+        return redirect()
+            ->to(route($this->routeNamespace('login')))
+            ->withAlertDanger(__($this->transNamespace('alerts.failure')))
+            ->withInput();
     }
 
     /**
-     * Logs out the user.
+     * Logs out the user by erasing the session data.
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -54,6 +66,6 @@ class LoginController extends Controller
         session()->forget('pcmn');
 
         // go to login screen
-        return redirect()->to('pcmn.login');
+        return redirect()->route($this->routeNamespace('login', true));
     }
 }

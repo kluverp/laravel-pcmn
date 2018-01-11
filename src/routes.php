@@ -13,7 +13,6 @@ Route::group([
     // login
     Route::get('/', 'Auth\LoginController@index')->name('login');
     Route::post('/', 'Auth\LoginController@post')->name('login');
-    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
     // password forgotten
     Route::get('/forgotten', 'Auth\ForgottenController@index')->name('login.forgotten');
@@ -30,7 +29,7 @@ Route::group([
 Route::group([
     'prefix' => config('pcmn.route_prefix'),
     'as' => 'pcmn.',
-    'middleware' => 'pcmn',
+    'middleware' => ['web', 'pcmn'],
     'namespace' => 'Kluverp\Pcmn'
 ], function () {
 
@@ -38,11 +37,15 @@ Route::group([
     Route::get('/', 'DashboardController@index')->name('dashboard');
 
     // entity list
-
-    // entity detail
+    Route::get('content/{table}', 'ContentController@index')->name('content.index');
+    Route::get('content/{table}/create', 'ContentController@create')->name('content.create');
+    Route::post('content/{table}', 'ContentController@store')->name('content.store');
 
     // settings
 
     // profile
+
+    // logout
+    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 });
