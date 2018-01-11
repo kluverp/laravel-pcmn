@@ -5,6 +5,7 @@ return [
     'title_forgotten' => 'Wachtwoord vergeten',
     'title_reset' => 'Wachtwoord herstellen',
     'password_forgotten' => 'Wachtwoord vergeten?',
+    'return_login' => 'Terug naar login',
     'form' => [
         'email' => 'E-Mail adres',
         'email_placeholder' => 'iemand@example.com',

@@ -5,6 +5,7 @@ return [
     'title_forgotten' => 'Password forgotten',
     'title_reset' => 'Reset password',
     'password_forgotten' => 'Password forgotten?',
+    'return_login' => 'Return to login',
     'form' => [
         'email' => 'E-Mail address',
         'email_placeholder' => 'someone@example.com',

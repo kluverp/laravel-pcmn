@@ -24,7 +24,7 @@ class Menu
      * @param array $menuDef
      * @param array $tableDef
      */
-    public function __construct(array $menuDef, array $tableDef)
+    public function __construct(array $menuDef = [], $tableDef = [])
     {
         // set our definitions
         $this->menuDef = $menuDef;

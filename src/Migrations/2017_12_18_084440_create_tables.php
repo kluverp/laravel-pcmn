@@ -24,6 +24,14 @@ class CreateTables extends Migration
             $table->dateTime('last_visit')->nullable();
             $table->timestamps();
         });
+
+        // add admin user
+        DB::table($this->getTableName('user'))->insert([
+            'active' => true,
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('@admin')
+        ]);
     }
 
     /**
@@ -44,6 +52,6 @@ class CreateTables extends Migration
      */
     private function getTableName($name)
     {
-        return config('pcmn.table_prefix') . $name;
+        return config('pcmn.config.table_prefix') . $name;
     }
 }
