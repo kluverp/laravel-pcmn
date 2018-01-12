@@ -6,7 +6,7 @@
 
         @include('pcmn::_components.messages')
 
-        <form class="form-signin" action="{{ route('pcmn.login') }}" method="post">
+        <form class="form-signin" action="{{ route('pcmn.auth.login') }}" method="post">
 
             {{ csrf_field() }}
 
@@ -15,7 +15,7 @@
 
             {{-- username --}}
             <div class="form-group">
-                <label for="inputEmail" class="sr-only">@lang('pcmn::login.form.email')</label>
+                <label for="inputEmail" class="sr-only">@lang($transNamespace . 'form.email')</label>
                 <input type="email" id="inputEmail"
                        class="form-control @if(!empty($errors) and $errors->has('email')) is-invalid @endif"
                        placeholder="@lang($transNamespace . 'form.email_placeholder')" value="{{ old('email') }}"
@@ -50,7 +50,7 @@
 
             {{-- password forgotten link --}}
             <div class="form-group">
-                <a href="{{ route('pcmn.login.forgotten') }}">@lang($transNamespace . 'password_forgotten')</a>
+                <a href="{{ route('pcmn.auth.forgotten') }}">@lang($transNamespace . 'password_forgotten')</a>
             </div>
 
         </form>

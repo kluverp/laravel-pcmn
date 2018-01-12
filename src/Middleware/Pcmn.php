@@ -18,7 +18,7 @@ class Pcmn
     {
         // check if authentication token is set, or show login
         if (!$user = User::bySession()) {
-            return redirect()->route('pcmn.login');
+            return redirect()->route('pcmn.auth.login');
         }
 
         // check if authentication token is expired

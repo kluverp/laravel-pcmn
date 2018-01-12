@@ -24,7 +24,7 @@ class Menu
      * @param array $menuDef
      * @param array $tableDef
      */
-    public function __construct(array $menuDef, array $tableDef)
+    public function __construct(array $menuDef = [], $tableDef = [])
     {
         // set our definitions
         $this->menuDef = $menuDef;
@@ -46,9 +46,9 @@ class Menu
 
                     if (isset($this->tableDef[$table])) {
                         $table = [
-                            'label' => 'foobar',
-                            'icon' => 'test',
-                            //'url' => route('pcmn.content.index', $table),
+                            'label' => $this->getLabel($table),
+                            'icon' => $this->getIcon($table),
+                            'url' => route('pcmn.content.index', $table),
                             'active' => false,
                             'records' => self::getRecordCount($table)
                         ];
@@ -71,5 +71,26 @@ class Menu
     private static function getRecordCount($table)
     {
         return rand(4, 23);
+    }
+
+
+    private function getLabel($table)
+    {
+        // check if key exists
+        if (isset($this->tableDef[$table]['title']['plural'])) {
+            return $this->tableDef[$table]['title']['plural'];
+        }
+
+        return '';
+    }
+
+    private function getIcon($table)
+    {
+        // check if key exists
+        if (isset($this->tableDef[$table]['icon'])) {
+            return $this->tableDef[$table]['icon'];
+        }
+
+        return false;
     }
 }

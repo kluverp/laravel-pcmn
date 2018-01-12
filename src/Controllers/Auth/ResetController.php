@@ -2,17 +2,23 @@
 
 namespace Kluverp\Pcmn\Auth;
 
-use Illuminate\Routing\Controller;
+use Kluverp\Pcmn\BaseController;
 use Kluverp\Pcmn\Requests\ResetRequest;
 use Kluverp\Pcmn\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 /**
- * Class DashboardController
- * @package App\Http\Controllers
+ * Class ResetController
+ * @package Kluverp\Pcmn\Auth
  */
-class ResetController extends Controller
+class ResetController extends BaseController
 {
+    /**
+     * The view/trans/route namespace.
+     *
+     * @var string
+     */
+    protected $namespace = 'auth';
+
     /**
      * Loads the Password reset form.
      *
@@ -20,8 +26,10 @@ class ResetController extends Controller
      */
     public function index()
     {
-        return view('pcmn::login.reset', [
-            'token' => request()->route('token')
+        return view($this->transNamespace('reset'), [
+            'token' => request()->route('token'),
+            'transNamespace' => $this->transNamespace(),
+            'routeNamespace' => $this->routeNamespace(false, true)
         ]);
     }
 
@@ -37,7 +45,7 @@ class ResetController extends Controller
 
         // if the user cannot be located, return with message
         if (!$user) {
-            return redirect()->back()->withAlertDanger(__('pcmn::login.alerts.reset_failure'));
+            return redirect()->back()->withAlertDanger(__($this->transNamespace('alerts.reset_failure')));
         }
 
         // update the user record
@@ -45,6 +53,6 @@ class ResetController extends Controller
         $user->reset_token = null;
         $user->save();
 
-        return redirect()->route('pcmn.login')->withAlertSuccess(__('pcmn::login.alerts.reset_success'));
+        return redirect()->route($this->routeNamespace('login'))->withAlertSuccess(__($this->transNamespace('alerts.reset_success')));
     }
 }

@@ -8,7 +8,7 @@
 
         @include('pcmn::_components.messages')
 
-        <form class="form-forgotten" action="{{ route('pcmn.login.forgotten') }}" method="post">
+        <form class="form-forgotten" action="{{ route('pcmn.auth.forgotten') }}" method="post">
 
             {{ csrf_field() }}
 
@@ -29,6 +29,11 @@
             {{-- submit --}}
             <div class="form-group">
                 <button class="btn btn-lg btn-primary btn-block" type="submit">@lang($transNamespace . 'form.btn_forgotten')</button>
+            </div>
+
+            {{-- password forgotten link --}}
+            <div class="form-group">
+                <a href="{{ route('pcmn.auth.login') }}">@lang($transNamespace . 'return_login')</a>
             </div>
 
         </form>

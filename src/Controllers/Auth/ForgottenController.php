@@ -14,6 +14,8 @@ use Kluverp\Pcmn\Models\User;
 class ForgottenController extends BaseController
 {
     /**
+     * The view/trans/route namespace.
+     *
      * @var string
      */
     protected $namespace = 'auth';
@@ -41,7 +43,7 @@ class ForgottenController extends BaseController
         // check if the users exists, if not we return and inform the user there is no such user.
         // possible security risk, but debatable.
         if (!$user = User::byEmail($request->email)) {
-            return redirect()->back()->withAlertInfo('No such user');
+            return redirect()->back()->withAlertInfo(__($this->transNamespace('alerts.no_such_user')));
         }
 
         // genereate a random token
@@ -54,6 +56,6 @@ class ForgottenController extends BaseController
         // notify user
         $user->notify(new ForgotPassword($token));
 
-        return redirect()->back()->withAlertSuccess('Send!');
+        return redirect()->back()->withAlertSuccess(__($this->transNamespace('alerts.reset_email_send')));
     }
 }

@@ -5,6 +5,7 @@ return [
     'title_forgotten' => 'Password forgotten',
     'title_reset' => 'Reset password',
     'password_forgotten' => 'Password forgotten?',
+    'return_login' => 'Return to login',
     'form' => [
         'email' => 'E-Mail address',
         'email_placeholder' => 'someone@example.com',
@@ -17,7 +18,9 @@ return [
     'alerts' => [
         'failure' => 'Unable to login',
         'reset_failure' => 'Wachtwoord herstellen mislukt',
-        'reset_success' => 'Wacht hersteld'
+        'reset_success' => 'Wacht hersteld',
+        'reset_email_send' => 'E-Mail verzonden',
+        'no_such_user' => 'Gebruiker niet gevonden',
     ],
     'texts' => [
         'forgotten' => 'Please fill in your e-mail address to receive a password reset email.'

@@ -63,7 +63,7 @@ class User extends Authenticatable
             ->first();
 
         // check the password
-        if (Hash::check($password, $user->password)) {
+        if (!empty($user) && Hash::check($password, $user->password)) {
             return $user;
         }
 
@@ -97,6 +97,6 @@ class User extends Authenticatable
      */
     public function getTable()
     {
-        return config('pcmn.table_prefix') . 'user';
+        return config('pcmn.config.table_prefix') . 'user';
     }
 }

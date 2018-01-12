@@ -8,12 +8,12 @@
 
         @include('pcmn::_components.messages')
 
-        <form class="form-forgotten" action="{{ route('pcmn.login.forgotten') }}" method="post">
+        <form class="form-forgotten" action="{{ route('pcmn.auth.forgotten') }}" method="post">
 
             {{ csrf_field() }}
 
             {{-- title --}}
-            <h2 class="form-signin-heading">@lang('pcmn::login.title_forgotten')</h2>
+            <h2 class="form-signin-heading">@lang($transNamespace . 'title_forgotten')</h2>
 
             <p>@lang('pcmn::login.texts.forgotten')</p>
 

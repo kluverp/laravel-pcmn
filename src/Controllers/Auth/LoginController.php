@@ -13,7 +13,7 @@ use Kluverp\Pcmn\Models\User;
 class LoginController extends BaseController
 {
     /**
-     * The namespace.
+     * The view/trans/route namespace.
      *
      * @var string
      */

@@ -11,12 +11,12 @@
         {{ csrf_field() }}
 
         {{-- title --}}
-        <h2 class="form-signin-heading">@lang('pcmn::login.title')</h2>
+        <h2 class="form-signin-heading">@lang($transNamespace . 'title')</h2>
 
         {{-- username --}}
         <div class="form-group">
             <label for="inputEmail" class="sr-only">@lang('pcmn::login.form.email')</label>
-            <input type="email" id="inputEmail" class="form-control @if(!empty($errors) and $errors->has('email')) is-invalid @endif" placeholder="@lang('pcmn::login.form.email_placeholder')" value="{{ old('email') }}" name="email"  autofocus>
+            <input type="email" id="inputEmail" class="form-control @if(!empty($errors) and $errors->has('email')) is-invalid @endif" placeholder="@lang($transNamespace . 'form.email_placeholder')" value="{{ old('email') }}" name="email"  autofocus>
             <div class="invalid-feedback">
                 {{ $errors->first('email') }}
             </div>
@@ -25,26 +25,26 @@
         {{-- password --}}
         <div class="form-group">
             <label for="inputPassword" class="sr-only">@lang('pcmn::login.form.password')</label>
-            <input type="password" id="inputPassword" name="password" class="form-control" placeholder="@lang('pcmn::login.form.password_placeholder')" required>
+            <input type="password" id="inputPassword" name="password" class="form-control" placeholder="@lang($transNamespace . 'form.password_placeholder')" required>
         </div>
 
         {{-- remember me --}}
         <div class="form-group">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" name="remember" value="remember-me"> @lang('pcmn::login.form.remember_me')
+                    <input type="checkbox" name="remember" value="remember-me"> @lang($transNamespace . 'form.remember_me')
                 </label>
             </div>
         </div>
 
         {{-- submit --}}
         <div class="form-group">
-            <button class="btn btn-lg btn-primary btn-block" type="submit">@lang('pcmn::login.form.btn_submit')</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">@lang($transNamespace . 'form.btn_submit')</button>
         </div>
 
         {{-- password forgotten link --}}
         <div class="form-group">
-            <a href="{{ route('pcmn.login.forgotten') }}">@lang('pcmn::login.password_forgotten')</a>
+            <a href="{{ route('pcmn.auth.forgotten') }}">@lang($transNamespace . 'password_forgotten')</a>
         </div>
 
     </form>

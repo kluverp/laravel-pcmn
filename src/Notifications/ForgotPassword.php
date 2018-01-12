@@ -51,7 +51,7 @@ class ForgotPassword extends Notification
             ->subject(__('pcmn::notifications.pw_forgotten.subject'))
             ->greeting(__('pcmn::notifications.pw_forgotten.greeting'))
             ->line(__('pcmn::notifications.pw_forgotten.line_1'))
-            ->action(__('pcmn::notifications.pw_forgotten.button'), route('pcmn.login.reset', $this->token))
+            ->action(__('pcmn::notifications.pw_forgotten.button'), route('pcmn.auth.reset', $this->token))
             ->line(__('pcmn::notifications.pw_forgotten.line_2'));
     }
 

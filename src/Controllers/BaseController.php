@@ -3,8 +3,8 @@
 namespace Kluverp\Pcmn;
 
 use Illuminate\Routing\Controller;
-use View;
 use Kluverp\Pcmn\Lib\Menu;
+use View;
 
 /**
  * Class BaseController
