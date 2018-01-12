@@ -8,7 +8,6 @@ All you need to do is focus on your application, the hassle of managing the cont
 PCMN is designed to be as invisible as possible, meaning it won't interfere with the way you build your site or application.
 
 
-
 ## Installation
 
 Require this package with composer. It is recommended to only require the package for development.
