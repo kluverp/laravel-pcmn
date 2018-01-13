@@ -36,8 +36,8 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="remember"
-                               value="remember-me"> @lang($transNamespace . 'form.remember_me')
+                        <input type="checkbox" name="remember_me"
+                               value="1"> @lang($transNamespace . 'form.remember_me')
                     </label>
                 </div>
             </div>

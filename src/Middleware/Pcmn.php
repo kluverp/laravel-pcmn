@@ -16,16 +16,21 @@ class Pcmn
      */
     public function handle($request, Closure $next)
     {
-        // check if authentication token is set, or show login
-        if (!$user = User::bySession()) {
-            return redirect()->route('pcmn.auth.login');
+        // check if we can login by using session
+        if ($user = User::bySession()) {
+            view()->share('user', $user);
+            return $next($request);
         }
 
-        // check if authentication token is expired
-        /*if ($user->auth_token_expiration < date('Y-m-d H:i:s')) {
-            return redirect()->to('pcmn.login');
-        }*/
+        // if we have a remember_me token try using that
+        if ($token = $request->cookie('remember_token')) {
+            if ($user = User::byToken($token)) {
+                view()->share('user', $user);
+                return $next($request);
+            }
+        }
 
-        return $next($request);
+        // in all other cases, we redirect the user back to login
+        return redirect()->route('pcmn.auth.login');
     }
 }

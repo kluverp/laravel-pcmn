@@ -5,6 +5,7 @@ namespace Kluverp\Pcmn\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Hash;
+use Illuminate\Support\Facades\Cookie;
 
 class User extends Authenticatable
 {
@@ -16,7 +17,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'auth_token', 'auth_token_expiration', 'last_visit',
+        'name',
+        'email',
+        'password',
+        'auth_token',
+        'auth_token_expiration',
+        'last_visit',
     ];
 
     /**
@@ -25,7 +31,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -47,6 +54,17 @@ class User extends Authenticatable
     public static function byEmail($email)
     {
         return self::where('email', $email)->first();
+    }
+
+    /**
+     * Return a user with use of remember_token value.
+     *
+     * @param $token
+     * @return mixed
+     */
+    public static function byToken($token)
+    {
+        return self::where('remember_token', $token)->first();
     }
 
     /**
@@ -75,10 +93,16 @@ class User extends Authenticatable
      *
      * @return $this
      */
-    public function login()
+    public function login($rememberMe = false)
     {
         $this->last_visit = date('Y-m-d H:i:s');
-        $this->remember_token = str_random(100);
+        if ($rememberMe) {
+            $this->remember_token = str_random(100);
+            Cookie::queue('remember_token', $this->remember_token, 60 * 24 * 365);
+        } else {
+            $this->remember_token = null;
+        }
+
         $this->save();
 
         // put generated token in session

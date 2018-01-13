@@ -43,7 +43,7 @@ class LoginController extends BaseController
         if ($user = User::authenticate($request->email, $request->password)) {
 
             // update the user record and set session
-            $user->login();
+            $user->login($request->remember_me);
 
             // redirect user to dashboard
             return redirect()->route($this->routeNamespace('dashboard', true));
@@ -66,6 +66,6 @@ class LoginController extends BaseController
         session()->forget('pcmn');
 
         // go to login screen
-        return redirect()->route($this->routeNamespace('login', true));
+        return redirect()->route($this->routeNamespace('login'));
     }
 }
