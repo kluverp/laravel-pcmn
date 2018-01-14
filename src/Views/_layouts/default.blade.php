@@ -8,7 +8,7 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                     @include('pcmn::_components.sidebar')
                 </div>
                 <div class="col">
