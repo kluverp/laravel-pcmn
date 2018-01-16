@@ -81,12 +81,15 @@ class DataTable
     public function script()
     {
         $data = [];
-        foreach ($this->config->getIndex() as $i) {
-            $data[]["data"] = $i;
+        foreach ($this->config->getIndex() as $key => $value) {
+            $value['name'] = $key;
+            $value['data'] = $key;
+            $data[] = $value;
         }
 
         // row actions
-        $data[]["data"] = [
+        $data[] = [
+            'data' => 'actions',
             'name' => 'actions',
             'searchable' => false,
             'sortable' => false
@@ -101,7 +104,8 @@ class DataTable
                 "url": "%s"
             },
             "columns": %s
-        });', route("pcmn.datatable.index", $this->getTable()), config('pcmn.datatable.languageUrl'), json_encode($data));
+        });', route("pcmn.datatable.index", $this->getTable()), config('pcmn.datatable.languageUrl'),
+            json_encode($data));
     }
 
     /**
@@ -158,11 +162,13 @@ class DataTable
      */
     private function query()
     {
+        $cols = array_keys($this->config->getIndex());
+
         return DB::table($this->getTable())
-            ->select($this->config->getIndex())
+            ->select($cols)
             ->skip($this->parameters['start'])
             ->take($this->parameters['length'])
-            ->orderBy($this->parameters['columns'][$this->parameters['order'][0]['column']]['data'], $this->parameters['order'][0]['dir'])
+            ->orderBy($cols[$this->parameters['order'][0]['column']], $this->parameters['order'][0]['dir'])
             ->get();
     }
 
@@ -210,8 +216,8 @@ class DataTable
     {
         if ($this->config->canUpdate()) {
             return '
-            <a class="btn btn-primary btn-sm" href="' . $this->route('edit', $rowId) . '">
-                ' . self::trans('actions.edit') . '
+            <a class="btn btn-primary btn-sm" href="' . $this->route('edit', [$rowId]) . '">
+                ' . self::trans('actions.update') . '
             </a>';
         }
 
@@ -226,7 +232,7 @@ class DataTable
     {
         if ($this->config->canRead()) {
             return '
-            <a class="btn btn-default btn-sm" href="' . $this->route('show', $rowId) . '">
+            <a class="btn btn-default btn-sm" href="' . $this->route('show', [$rowId]) . '">
                 ' . self::trans('actions.read') . '
             </a>';
         }
@@ -263,9 +269,13 @@ class DataTable
      * @param array $params
      * @return string
      */
-    private function route($route, $params = [])
+    private function route($route, $parameters = [])
     {
-        $params = array_merge([$this->getTable()], $params);
+        $params = [$this->getTable()];
+
+        if (is_array($parameters)) {
+            $params = array_merge($params, $parameters);
+        }
 
         return route('pcmn.content.' . $route, $params);
     }
