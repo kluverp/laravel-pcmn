@@ -23,8 +23,6 @@
         </p>
     @endif
 
-    <hr>
-
     {!! $dataTable->html() !!}
 
 @endsection
@@ -34,7 +32,7 @@
 
     <script type="text/javascript">
 
-        $(document).ready(function(){
+        $(document).ready(function () {
 
             {!! $dataTable->script() !!}
 

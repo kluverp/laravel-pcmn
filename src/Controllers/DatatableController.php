@@ -4,6 +4,7 @@ namespace Kluverp\Pcmn;
 
 use Illuminate\Http\Request;
 use Kluverp\Pcmn\Lib\DataTable;
+use Kluverp\Pcmn\Lib\TableConfig;
 
 /**
  * Class DashboardController
@@ -20,11 +21,13 @@ class DatatableController extends BaseController
      */
     public function index($table, Request $request)
     {
-        // init new DataTable processor
-        $dataTable = new DataTable(config('pcmn.tables.' . $table), $request->all());
+        // create new TableConfig object
+        $config = new TableConfig($table, config('pcmn.tables.' . $table));
 
+        // init new DataTable processor
+        $dataTable = new DataTable($config, $request->all());
 
         // output JSON result
-        return response()->json($dataTable->process());
+        return response()->json($dataTable->ajax());
     }
 }

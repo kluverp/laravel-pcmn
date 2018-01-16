@@ -36,10 +36,14 @@ Route::group([
     // dashboard
     Route::get('/', 'DashboardController@index')->name('dashboard');
 
-    // entity list
+    // content
     Route::get('content/{table}', 'ContentController@index')->name('content.index');
     Route::get('content/{table}/create', 'ContentController@create')->name('content.create');
     Route::post('content/{table}', 'ContentController@store')->name('content.store');
+    Route::get('content/{table}/{id}', 'ContentController@show')->name('content.show');
+    Route::get('content/{table}/{id}/edit', 'ContentController@edit')->name('content.edit');
+    Route::put('content/{table}/{id}/edit', 'ContentController@update')->name('content.update');
+    Route::delete('content/{table}/{id}/edit', 'ContentController@destroy')->name('content.destroy');
 
     // datatable
     Route::get('datatable/{table}', 'DatatableController@index')->name('datatable.index');
