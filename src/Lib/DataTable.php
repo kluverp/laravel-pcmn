@@ -125,7 +125,7 @@ class DataTable
         }
 
         foreach ($query as &$q) {
-            $q->actions = $this->getActions(1);
+            $q->actions = $this->getActions($q->id);
         }
 
         // form data array
@@ -162,7 +162,8 @@ class DataTable
      */
     private function query()
     {
-        $cols = array_keys($this->config->getIndex());
+        $cols = ['id'];
+        $cols = array_merge($cols, array_keys($this->config->getIndex()));
 
         return DB::table($this->getTable())
             ->select($cols)

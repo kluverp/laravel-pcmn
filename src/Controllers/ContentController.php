@@ -4,6 +4,7 @@ namespace Kluverp\Pcmn;
 
 use Kluverp\Pcmn\Lib\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
+use Kluverp\Pcmn\Lib\Form;
 
 /**
  * Class ContentController
@@ -17,6 +18,23 @@ class ContentController extends BaseController
      * @var string
      */
     protected $namespace = 'content';
+
+    protected $table = null;
+    protected $config = null;
+
+    /**
+     * ContentController constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        // set the table parameter
+        $this->table = request()->route('table');
+
+        // create new TableConfig object
+        $this->config = new TableConfig($this->table, config('pcmn.tables.' . $this->table));
+    }
 
     /**
      * Load content index.
@@ -54,9 +72,13 @@ class ContentController extends BaseController
 
     }
 
-    public function edit()
+    public function edit($table, $id)
     {
-
+        return view($this->viewNamespace('edit'), [
+            'title' => $this->config->getTitle('singular'),
+            'description' => $this->config->getDescription(),
+            'form' => (new Form($this->config))
+        ]);
     }
 
     public function update()

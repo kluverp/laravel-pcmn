@@ -3,6 +3,7 @@
 namespace Kluverp\Pcmn;
 
 use Illuminate\Routing\Controller;
+use Kluverp\Pcmn\Lib\Breadcrumb;
 use Kluverp\Pcmn\Lib\Menu;
 use View;
 
@@ -46,6 +47,7 @@ class BaseController extends Controller
     {
         // load the menu
         View::share('menu', (new Menu(config('pcmn.menu'), config('pcmn.tables')))->getMenu());
+        View::share('breadcrumb', (new Breadcrumb())->getBreadCrumbs());
     }
 
     /**

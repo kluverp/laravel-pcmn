@@ -1,7 +1,13 @@
 <nav aria-label="breadcrumb" role="navigation">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ route('pcmn.dashboard') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Library</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Data</li>
+        @foreach($breadcrumb as $url => $label)
+            <li class="breadcrumb-item @if($loop->last) active @endif">
+                @if($loop->last)
+                    {{ $label }}
+                @else
+                    <a href="{{ $url }}">{{ $label }}</a>
+                @endif
+            </li>
+        @endforeach
     </ol>
 </nav>
