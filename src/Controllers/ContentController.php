@@ -4,7 +4,7 @@ namespace Kluverp\Pcmn;
 
 use Kluverp\Pcmn\Lib\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
-use Kluverp\Pcmn\Lib\Form;
+use Kluverp\Pcmn\Lib\Form\Form;
 
 /**
  * Class ContentController

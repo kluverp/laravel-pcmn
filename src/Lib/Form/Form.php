@@ -14,6 +14,13 @@ class Form
     private $config = null;
 
     /**
+     * The fields array.
+     *
+     * @var array
+     */
+    private $fields = [];
+
+    /**
      * Form constructor.
      * @param TableConfig $config
      */
@@ -33,7 +40,9 @@ class Form
     {
         // build each field in the form definition
         foreach ($this->config->getFields() as $name => $field) {
-            $this->fields[] = FieldFactory::make($name, $field);
+            if ($obj = FieldFactory::make($name, $field)) {
+                $this->fields[] = $obj;
+            }
         }
     }
 
@@ -44,8 +53,18 @@ class Form
      */
     public function html()
     {
-        return view('pcmn::content.form', [
+        return view('pcmn::content.form.form', [
             'fields' => $this->getFields()
         ]);
+    }
+
+    /**
+     * Returns fields array.
+     *
+     * @return array
+     */
+    protected function getFields()
+    {
+        return $this->fields;
     }
 }
