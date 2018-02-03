@@ -21,13 +21,23 @@ class Form
     private $fields = [];
 
     /**
+     * The database record.
+     *
+     * @var array
+     */
+    private $data = [];
+
+    /**
      * Form constructor.
      * @param TableConfig $config
      */
-    public function __construct(TableConfig $config)
+    public function __construct(TableConfig $config, $data)
     {
         // set config
         $this->config = $config;
+
+        // set the record
+        $this->data = $data;
 
         // build the form
         $this->build();
@@ -40,10 +50,25 @@ class Form
     {
         // build each field in the form definition
         foreach ($this->config->getFields() as $name => $field) {
-            if ($obj = FieldFactory::make($name, $field)) {
+            if ($obj = FieldFactory::make($name, $field, $this->getValue($name))) {
                 $this->fields[] = $obj;
             }
         }
+    }
+
+    /**
+     * Returns the value for given field name.
+     *
+     * @param $name
+     * @return null
+     */
+    private function getValue($name)
+    {
+        if (property_exists($this->data, $name)) {
+            return $this->data->{$name};
+        }
+
+        return null;
     }
 
     /**

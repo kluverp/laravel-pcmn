@@ -5,6 +5,7 @@ namespace Kluverp\Pcmn;
 use Kluverp\Pcmn\Lib\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
 use Kluverp\Pcmn\Lib\Form\Form;
+use DB;
 
 /**
  * Class ContentController
@@ -74,10 +75,12 @@ class ContentController extends BaseController
 
     public function edit($table, $id)
     {
+        $data = DB::table($table)->find($id);
+
         return view($this->viewNamespace('edit'), [
             'title' => $this->config->getTitle('singular'),
             'description' => $this->config->getDescription(),
-            'form' => (new Form($this->config))
+            'form' => (new Form($this->config, $data))
         ]);
     }
 
