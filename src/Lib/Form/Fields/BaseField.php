@@ -42,13 +42,6 @@ class BaseField
     protected $view = 'input';
 
     /**
-     * Options in case of 'radio', 'select' and 'checkbox'.
-     *
-     * @var array
-     */
-    protected $options = [];
-
-    /**
      * BaseField constructor.
      * @param $name
      * @param $config
@@ -59,11 +52,6 @@ class BaseField
         $this->name = $name;
         $this->config = $config;
         $this->value = $value;
-
-        // check for options and parse them
-        if (!empty($config['options'])) {
-            $this->parseOptions($config['options'], $config);
-        }
     }
 
     /**
@@ -149,14 +137,21 @@ class BaseField
      */
     protected function getView()
     {
-        return view('pcmn::content.form.fields.' . $this->view, [
+        return view('pcmn::content.form.fields.' . $this->view, $this->getViewData());
+    }
+
+    /**
+     * Return data array for view.
+     *
+     * @return array
+     */
+    protected function getViewData()
+    {
+        return [
             'id' => $this->getId(),
             'label' => $this->getLabel(),
-            'attr' => $this->getAttributeStr(),
-            'name' => $this->getName(),
-            'value' => $this->getValue(),
-            'options' => $this->getOptions()
-        ]);
+            'attr' => $this->getAttributeStr()
+        ];
     }
 
     /**
@@ -189,46 +184,5 @@ class BaseField
             'value' => $this->getValue(),
             'type' => $this->getType()
         ];
-    }
-
-    /**
-     * Parses the options string.
-     *
-     * @param $configOptions
-     * @return array
-     */
-    protected function parseOptions($configOptions, $showEmpty = false)
-    {
-        $options = [];
-
-        // parse the options string and split on pipe
-        $rawOptions = explode('|', $configOptions);
-
-        // add empty option if set
-        if($showEmpty) {
-            $options[] = new FieldOption($showEmpty, null, '');
-        }
-
-        // build the options array
-        foreach ($rawOptions as $rawOption) {
-            // explode the options str
-            $values = explode(',', $rawOption);
-
-            // add parsed option
-            $options[] = new FieldOption($values[0], $values[1], $values[2]);
-        }
-
-        // set options array
-        return $this->options = $options;
-    }
-
-    /**
-     * Returns the options array.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
     }
 }

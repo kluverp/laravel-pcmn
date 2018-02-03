@@ -2,7 +2,7 @@
 
 namespace Kluverp\Pcmn\Lib\Form\Fields;
 
-class Radio extends BaseField
+class Radio extends Select
 {
     /**
      * Radio type.
