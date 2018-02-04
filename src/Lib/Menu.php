@@ -54,7 +54,7 @@ class Menu
                         ];
                     } else {
                         $table = [
-                            'label' => '&lt; ! missing table definition &gt;',
+                            'label' => '&lt;missing table definition&gt;',
                             'icon' => false,
                             'url' => false,
                             'active' => false,

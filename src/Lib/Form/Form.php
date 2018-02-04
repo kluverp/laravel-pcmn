@@ -28,16 +28,25 @@ class Form
     private $data = [];
 
     /**
+     * The form action.
+     *
+     * @var null
+     */
+    private $action = null;
+
+    /**
      * Form constructor.
      * @param TableConfig $config
      */
-    public function __construct(TableConfig $config, $data)
+    public function __construct(TableConfig $config, $data = [], $action = null)
     {
         // set config
         $this->config = $config;
 
         // set the record
         $this->data = $data;
+
+        $this->action = $action;
 
         // build the form
         $this->build();
@@ -64,8 +73,12 @@ class Form
      */
     private function getValue($name)
     {
-        if (property_exists($this->data, $name)) {
-            return $this->data->{$name};
+        // check if data is set
+        if (!empty($this->data)) {
+            // check if the property on this data obj is set
+            if (property_exists($this->data, $name)) {
+                return $this->data->{$name};
+            }
         }
 
         return null;
@@ -79,7 +92,8 @@ class Form
     public function html()
     {
         return view('pcmn::content.form.form', [
-            'fields' => $this->getFields()
+            'fields' => $this->getFields(),
+            'action' => $this->getAction()
         ]);
     }
 
@@ -91,5 +105,15 @@ class Form
     protected function getFields()
     {
         return $this->fields;
+    }
+
+    /**
+     * Returns the action.
+     *
+     * @return null
+     */
+    protected function getAction()
+    {
+        return $this->action;
     }
 }

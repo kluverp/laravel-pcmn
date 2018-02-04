@@ -6,6 +6,7 @@ use Kluverp\Pcmn\Lib\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
 use Kluverp\Pcmn\Lib\Form\Form;
 use DB;
+use Illuminate\Http\Request;
 
 /**
  * Class ContentController
@@ -20,7 +21,18 @@ class ContentController extends BaseController
      */
     protected $namespace = 'content';
 
+    /**
+     * Table to view.
+     *
+     * @var \Illuminate\Routing\Route|null|object|string
+     */
     protected $table = null;
+
+    /**
+     * Table configuration object.
+     *
+     * @var TableConfig|null
+     */
     protected $config = null;
 
     /**
@@ -58,14 +70,35 @@ class ContentController extends BaseController
         ]);
     }
 
+    /**
+     * Create new record.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
-
+        return view($this->viewNamespace('create'), [
+            'title' => $this->config->getTitle('singular'),
+            'description' => $this->config->getDescription(),
+            'form' => (new Form($this->config, null, route('pcmn.content.store', [$this->table])))
+        ]);
     }
 
-    public function store()
+    /**
+     * Store a new record.
+     */
+    public function store($table, Request $request)
     {
+        // insert new record
+        $record = DB::table($table)->insert($request->except(['_token']));
 
+        // get last insert ID
+        $id = DB::getPdo()->lastInsertId();
+
+        // retur to the edit screen
+        return redirect()
+            ->route('pcmn.content.edit', [$table, $id])
+            ->with('alert_success', 'Opgelsagen!');
     }
 
     public function show()
@@ -75,12 +108,14 @@ class ContentController extends BaseController
 
     public function edit($table, $id)
     {
-        $data = DB::table($table)->find($id);
+        if (!$data = DB::table($table)->find($id)) {
+            abort(404);
+        }
 
         return view($this->viewNamespace('edit'), [
             'title' => $this->config->getTitle('singular'),
             'description' => $this->config->getDescription(),
-            'form' => (new Form($this->config, $data))
+            'form' => (new Form($this->config, $data, route('pcmn.content.update', [$table, $id])))
         ]);
     }
 
