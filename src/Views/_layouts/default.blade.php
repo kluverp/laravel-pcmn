@@ -7,6 +7,9 @@
     <main role="main" class="container">
 
         <div class="container">
+
+            @include('pcmn::_components.messages')
+
             <div class="row">
                 <div class="col-3">
                     @include('pcmn::_components.sidebar')

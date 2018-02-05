@@ -90,7 +90,7 @@ class ContentController extends BaseController
     public function store($table, Request $request)
     {
         // insert new record
-        $record = DB::table($table)->insert($request->except(['_token']));
+        $record = DB::table($table)->insert($request->except(['_token', '_method']));
 
         // get last insert ID
         $id = DB::getPdo()->lastInsertId();
@@ -119,13 +119,43 @@ class ContentController extends BaseController
         ]);
     }
 
-    public function update()
+    /**
+     * Update the record.
+     *
+     * @param $table
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update($table, $id, Request $request)
     {
+        // check if record exists
+        if (!$row = DB::table($table)->find($id)) {
+            abort(404);
+        }
 
+        // update model
+        DB::table($table)->where('id', $id)->update($request->except(['_token', '_method']));
+
+        return redirect()
+            ->back()
+            ->with('alert_success', 'Opgelsagen!');
     }
 
-    public function destroy()
+    /**
+     * Delete the given record.
+     *
+     * @param $table
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($table, $id)
     {
+        // remove the record
+        DB::table($table)->where('id', $id)->delete();
 
+        return redirect()
+            ->route('pcmn.content.index', [$table])
+            ->with('alert_danger', 'Verwijderd!');
     }
 }

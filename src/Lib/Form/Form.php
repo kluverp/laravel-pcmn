@@ -93,7 +93,8 @@ class Form
     {
         return view('pcmn::content.form.form', [
             'fields' => $this->getFields(),
-            'action' => $this->getAction()
+            'action' => $this->getAction(),
+            'method' => $this->getMethod()
         ]);
     }
 
@@ -115,5 +116,19 @@ class Form
     protected function getAction()
     {
         return $this->action;
+    }
+
+    /**
+     * Returns the method based on '/edit' in URL.
+     *
+     * @return string
+     */
+    protected function getMethod()
+    {
+        if (strpos($this->action, '/edit')) {
+            return 'PUT';
+        }
+
+        return 'POST';
     }
 }

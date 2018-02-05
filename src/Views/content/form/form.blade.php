@@ -1,5 +1,6 @@
 <form class="form-horizontal" action="{{ $action }}" method="post">
     <input type="hidden" name="_token" value="{{ csrf_token() }}"/>
+    <input type="hidden" name="_method" value="{{ $method }}"/>
     @foreach($fields as $field)
         {!! $field->html() !!}
     @endforeach
