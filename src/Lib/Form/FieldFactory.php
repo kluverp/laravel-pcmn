@@ -2,11 +2,10 @@
 
 namespace Kluverp\Pcmn\Lib\Form;
 
-use Kluverp\Pcmn\Lib\Form\Fields\Input;
-use Kluverp\Pcmn\Lib\Form\Fields\Email;
-use Kluverp\Pcmn\Lib\Form\Fields\Radio;
-use Kluverp\Pcmn\Lib\Form\Fields\Select;
-
+/**
+ * Class FieldFactory
+ * @package Kluverp\Pcmn\Lib\Form
+ */
 class FieldFactory
 {
     /**
@@ -15,29 +14,30 @@ class FieldFactory
      * @param $name
      * @param $config
      * @param $value
-     * @return bool|Email|Input|Radio|Select
+     * @return mixed
+     * @throws \Exception
      */
     public static function make($name, $config, $value)
     {
-        $field = false;
+        // get classname based on given 'type'
+        $className = self::typeToClassname($config['type']);
 
-        // built form field based on config
-        switch ($config['type']) {
-            case 'input':
-                $field = new Input($name, $config, $value);
-                break;
-            case 'email':
-                $field = new Email($name, $config, $value);
-                break;
-            case 'radio':
-                $field = new Radio($name, $config, $value);
-                break;
-            case 'select':
-                $field = new Select($name, $config, $value);
-                break;
-            default:
+        // check if the class exists
+        if (!class_exists($className)) {
+            throw new \Exception('Invalid field type specified (' . $config['type'] . ')');
         }
 
-        return $field;
+        return new $className($name, $config, $value);
+    }
+
+    /**
+     * Translate the given 'type' to a classname.
+     *
+     * @param $type
+     * @return string
+     */
+    private static function typeToClassName($type)
+    {
+        return __NAMESPACE__ . '\Fields\\' . studly_case($type);
     }
 }

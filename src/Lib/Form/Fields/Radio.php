@@ -10,12 +10,4 @@ class Radio extends Select
      * @var string
      */
     protected $type = 'radio';
-
-    /**
-     * View file.
-     *
-     * @var string
-     */
-    protected $view = 'radio';
-
 }

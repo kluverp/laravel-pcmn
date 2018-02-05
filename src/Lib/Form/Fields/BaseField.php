@@ -35,13 +35,6 @@ class BaseField
     protected $type = 'text';
 
     /**
-     * View to use.
-     *
-     * @var string
-     */
-    protected $view = 'input';
-
-    /**
      * BaseField constructor.
      * @param $name
      * @param $config
@@ -61,7 +54,7 @@ class BaseField
      */
     public function html()
     {
-        return $this->getView();
+        return view($this->getView(), $this->getViewData());
     }
 
     /**
@@ -131,13 +124,13 @@ class BaseField
     }
 
     /**
-     * Returns the Fields' view.
+     * Returns the Fields' view path based on the Class' name.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return string
      */
     protected function getView()
     {
-        return view('pcmn::content.form.fields.' . $this->view, $this->getViewData());
+        return 'pcmn::content.form.fields.' . snake_case(lcfirst(class_basename(get_class($this))));
     }
 
     /**

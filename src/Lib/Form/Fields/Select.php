@@ -12,13 +12,6 @@ class Select extends BaseField
     protected $type = 'select';
 
     /**
-     * View to load.
-     *
-     * @var string
-     */
-    protected $view = 'select';
-
-    /**
      * Options in case of 'radio', 'select' and 'checkbox'.
      *
      * @var array
