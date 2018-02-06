@@ -113,6 +113,11 @@ class BaseField
         return old($this->getName(), $this->value);
     }
 
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
     /**
      * Returns the input type.
      *

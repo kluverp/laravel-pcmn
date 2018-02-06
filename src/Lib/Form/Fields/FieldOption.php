@@ -79,6 +79,12 @@ class FieldOption
      */
     public function isChecked($value, $index = null)
     {
+        // checkbox or multiselect
+        if(is_array($value)) {
+            return in_array($this->value, $value);
+        }
+
+        // radio
         // if no value is set, and it is the first option, then set it as default.
         if (isset($index) && $index == 0 && $value == null) {
             return true;

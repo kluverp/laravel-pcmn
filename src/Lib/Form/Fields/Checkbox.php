@@ -10,4 +10,15 @@ class Checkbox extends Select
      * @var string
      */
     protected $type = 'checkbox';
+
+    public function getAttributes()
+    {
+        return [];
+    }
+
+
+    public function getValue()
+    {
+        return old($this->getName(), explode(',', $this->value));
+    }
 }

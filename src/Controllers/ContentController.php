@@ -7,6 +7,7 @@ use Kluverp\Pcmn\Lib\TableConfig;
 use Kluverp\Pcmn\Lib\Form\Form;
 use DB;
 use Illuminate\Http\Request;
+use Kluverp\Pcmn\Lib\Form\DataHandler;
 
 /**
  * Class ContentController
@@ -89,8 +90,10 @@ class ContentController extends BaseController
      */
     public function store($table, Request $request)
     {
+        $dataHandler = new DataHandler($request->except(['_token', '_method']));
+
         // insert new record
-        $record = DB::table($table)->insert($request->except(['_token', '_method']));
+        $record = DB::table($table)->insert($dataHandler->getFlatData());
 
         // get last insert ID
         $id = DB::getPdo()->lastInsertId();
@@ -134,8 +137,10 @@ class ContentController extends BaseController
             abort(404);
         }
 
+        $dataHandler = new DataHandler($request->except(['_token', '_method']));
+
         // update model
-        DB::table($table)->where('id', $id)->update($request->except(['_token', '_method']));
+        DB::table($table)->where('id', $id)->update($dataHandler->getFlatData());
 
         return redirect()
             ->back()
