@@ -4,4 +4,5 @@
         <option value="{{ $option->getValue() }}" @if($option->isSelected($value)) selected="selected" @endif>{{ $option->getLabel() }}</option>
     @endforeach
 </select>
+<small class="form-text text-muted">{{ $helpText }}</small>
 @endcomponent

@@ -143,7 +143,8 @@ class BaseField
         return [
             'id' => $this->getId(),
             'label' => $this->getLabel(),
-            'attr' => $this->getAttributeStr()
+            'attr' => $this->getAttributeStr(),
+            'helpText' => $this->getHelpText()
         ];
     }
 
@@ -177,5 +178,19 @@ class BaseField
             'value' => $this->getValue(),
             'type' => $this->getType()
         ];
+    }
+
+    /**
+     * Returns the field's helptext if set.
+     *
+     * @return bool
+     */
+    public function getHelpText()
+    {
+        if (!empty($this->config['help_text'])) {
+            return $this->config['help_text'];
+        }
+
+        return false;
     }
 }
