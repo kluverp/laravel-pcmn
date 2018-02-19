@@ -8,6 +8,7 @@ use Kluverp\Pcmn\Lib\Form\Form;
 use DB;
 use Illuminate\Http\Request;
 use Kluverp\Pcmn\Lib\Form\DataHandler;
+use Kluverp\Pcmn\Lib\Breadcrumb;
 
 /**
  * Class ContentController
@@ -47,7 +48,10 @@ class ContentController extends BaseController
         $this->table = request()->route('table');
 
         // create new TableConfig object
-        $this->config = new TableConfig($this->table, config('pcmn.tables.' . $this->table));
+        $this->config = new TableConfig($this->table, config('pcmn.tables.' . $this->table), request()->route('id'));
+
+        // add index url
+        $this->breadcrumbs->add($this->config->getIndexUrl(), $this->config->getTitle('plural'));
     }
 
     /**
@@ -67,7 +71,8 @@ class ContentController extends BaseController
         return view($this->viewNamespace('index'), [
             'title' => $config->getTitle(),
             'description' => $config->getDescription(),
-            'dataTable' => $dataTable
+            'dataTable' => $dataTable,
+            'breadcrumbs' => $this->breadcrumbs
         ]);
     }
 
@@ -87,13 +92,18 @@ class ContentController extends BaseController
 
     /**
      * Store a new record.
+     *
+     * @param $table
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store($table, Request $request)
     {
-        $dataHandler = new DataHandler($request->except(['_token', '_method']));
+        // init data handler object
+        $dataHandler = new DataHandler($this->config, $request->except(['_token', '_method']));
 
         // insert new record
-        $record = DB::table($table)->insert($dataHandler->getFlatData());
+        DB::table($table)->insert($dataHandler->getForStorage());
 
         // get last insert ID
         $id = DB::getPdo()->lastInsertId();
@@ -104,6 +114,10 @@ class ContentController extends BaseController
             ->with('alert_success', 'Opgelsagen!');
     }
 
+    /**
+     * Show a read-only version of the data.
+     *
+     */
     public function show()
     {
 
@@ -111,14 +125,26 @@ class ContentController extends BaseController
 
     public function edit($table, $id)
     {
+        // if record cannot be found, show a 404 page
         if (!$data = DB::table($table)->find($id)) {
             abort(404);
         }
 
+        // create new form object
+        $form = new Form($this->config, [
+            'method' => 'post',
+            'action' => route('pcmn.content.update', [$table, $id]),
+            'data' => $data
+        ]);
+
+        // add breadcrumb
+        $this->breadcrumbs->add('', $this->config->getTitle('singular') . ' ('. request()->route('id') .')');
+
         return view($this->viewNamespace('edit'), [
             'title' => $this->config->getTitle('singular'),
             'description' => $this->config->getDescription(),
-            'form' => (new Form($this->config, $data, route('pcmn.content.update', [$table, $id])))
+            'form' => $form,
+            'breadcrumbs' => $this->breadcrumbs
         ]);
     }
 
@@ -137,10 +163,21 @@ class ContentController extends BaseController
             abort(404);
         }
 
-        $dataHandler = new DataHandler($request->except(['_token', '_method']));
+        $form = new Form($this->config, [
+            'method' => 'post',
+            'action' => route('pcmn.content.update', [$table, $id]),
+            'request' => $request
+        ]);
+
+        if (!$form->validate()) {
+            // return with messages
+        }
+
+        // init data handler
+        $dataHandler = new DataHandler($this->config, $request->except(['_token', '_method']));
 
         // update model
-        DB::table($table)->where('id', $id)->update($dataHandler->getFlatData());
+        DB::table($table)->where('id', $id)->update($dataHandler->getForStorage());
 
         return redirect()
             ->back()

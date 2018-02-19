@@ -2,7 +2,8 @@
 
 @section('content')
 
-    @include('pcmn::_components.breadcrumbs')
+    {{-- breadcrumbs trail --}}
+    {!! $breadcrumbs->html() !!}
 
     <h1>
         {{ $title }}

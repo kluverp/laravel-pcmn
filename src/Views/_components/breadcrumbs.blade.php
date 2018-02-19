@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb" role="navigation">
     <ol class="breadcrumb">
-        @foreach($breadcrumb as $url => $label)
+        @foreach($breadcrumbs as $url => $label)
             <li class="breadcrumb-item @if($loop->last) active @endif">
                 @if($loop->last)
                     {{ $label }}

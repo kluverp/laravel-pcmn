@@ -2,8 +2,10 @@
 
 @section('content')
 
-    @include('pcmn::_components.breadcrumbs')
+    {{-- breadcrumbs trail --}}
+    {!! $breadcrumbs->html() !!}
 
+    {{-- page title --}}
     <h1>
         {{ $title }}
         <small class="text-muted">edit</small>
@@ -11,12 +13,14 @@
 
     <hr>
 
+    {{-- page description --}}
     @if(!empty($description))
         <p class="lead">
             {{ $description }}
         </p>
     @endif
 
+    {{-- the genereated form --}}
     {!! $form->html() !!}
 
 @endsection

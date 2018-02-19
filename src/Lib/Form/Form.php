@@ -32,21 +32,39 @@ class Form
      *
      * @var null
      */
-    private $action = null;
+    private $action = '';
+
+    /**
+     * The form method.
+     *
+     * @var string
+     */
+    private $method = 'post';
 
     /**
      * Form constructor.
      * @param TableConfig $config
+     * @param $options
      */
-    public function __construct(TableConfig $config, $data = [], $action = null)
+    public function __construct(TableConfig $config, $options = [])
     {
         // set config
         $this->config = $config;
 
-        // set the record
-        $this->data = $data;
+        // set form method
+        if (!empty($options['method'])) {
+            $this->method = $options['method'];
+        }
 
-        $this->action = $action;
+        // set form action
+        if (!empty($options['action'])) {
+            $this->action = $options['action'];
+        }
+
+        // set data record
+        if (!empty($options['data'])) {
+            $this->data = $options['data'];
+        }
 
         // build the form
         $this->build();
@@ -125,10 +143,6 @@ class Form
      */
     protected function getMethod()
     {
-        if (strpos($this->action, '/edit')) {
-            return 'PUT';
-        }
-
-        return 'POST';
+        return $this->method;
     }
 }

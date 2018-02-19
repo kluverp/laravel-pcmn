@@ -68,12 +68,19 @@ class TableConfig
     private $fields = [];
 
     /**
-     * TableConfig constructor.
+     * The record ID for given table record.
      *
-     * @param string $table
-     * @param array $config
+     * @var null
      */
-    public function __construct($table, $config)
+    private $recordId = null;
+
+    /**
+     * TableConfig constructor.
+     * @param $table
+     * @param $config
+     * @param null $recordId
+     */
+    public function __construct($table, $config, $recordId = null)
     {
         // set table
         $this->table = $table;
@@ -86,6 +93,9 @@ class TableConfig
                 }
             }
         }
+
+        // set the record ID
+        $this->recordId = $recordId;
     }
 
     /**
@@ -243,5 +253,35 @@ class TableConfig
         }
 
         return false;
+    }
+
+    /**
+     * Returns url to edit page.
+     *
+     * @return string
+     */
+    private function getUrl($action = 'index', $params = [])
+    {
+        return route('pcmn.content.' . $action, $params);
+    }
+
+    /**
+     * Returns URL to index page.
+     *
+     * @return string
+     */
+    public function getIndexUrl()
+    {
+        return $this->getUrl('index', $this->table);
+    }
+
+    /**
+     * Returns url to edit page.
+     *
+     * @return string
+     */
+    public function getEditUrl()
+    {
+        return $this->getUrl('edit', [$this->table, $this->recordId]);
     }
 }

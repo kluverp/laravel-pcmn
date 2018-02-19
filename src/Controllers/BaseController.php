@@ -41,13 +41,22 @@ class BaseController extends Controller
     protected $transNamespace = 'pcmn::';
 
     /**
+     * The breadcrumbs object.
+     *
+     * @var
+     */
+    protected $breadcrumbs;
+
+    /**
      * BaseController constructor.
      */
     public function __construct()
     {
         // load the menu
         View::share('menu', (new Menu(config('pcmn.menu'), config('pcmn.tables')))->getMenu());
-        View::share('breadcrumb', (new Breadcrumb())->getBreadCrumbs());
+
+        // init new object
+        $this->breadcrumbs = new Breadcrumb();
     }
 
     /**

@@ -20,11 +20,17 @@ class Breadcrumb
 
     /**
      * Breadcrumb constructor.
+     * @param array $crumbs
      */
-    public function __construct()
+    public function __construct($crumbs = [])
     {
         // add the home route
         $this->add(route('pcmn.dashboard'), 'Dashboard');
+
+        // fill if crumbs are given
+        foreach ($crumbs as $key => $value) {
+            $this->add($key, $value);
+        }
     }
 
     /**
@@ -34,7 +40,7 @@ class Breadcrumb
      */
     public function html()
     {
-        return view($this->view, $this->getBreadCrumbs());
+        return view($this->view, ['breadcrumbs' => $this->getBreadCrumbs()]);
     }
 
     /**
@@ -54,7 +60,7 @@ class Breadcrumb
      * @param $value
      * @return mixed
      */
-    private function add($key, $value)
+    public function add($key, $value)
     {
         return $this->crumbs[$key] = $value;
     }
