@@ -12,10 +12,7 @@
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('pcmn.content.index', 'pcmn_user') }}">Gebruikers</a>
+                <a class="nav-link" href="{{ route('pcmn.content.index', 'pcmn_user') }}">{{  __('pcmn::navbar.users') }}</a>
             </li>
         </ul>
         <ul class="navbar-nav">
@@ -24,7 +21,7 @@
                     {{ $user->name }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="#">Profiel</a>
+                    <a class="dropdown-item" href="{{ route('pcmn.content.edit', ['pcmn_user', $user->id]) }}">{{ __('pcmn::navbar.profile') }}</a>
                     <a class="dropdown-item" href="{{ route('pcmn.logout') }}">Logout</a>
                 </div>
             </li>

@@ -2,6 +2,13 @@
 
 namespace Kluverp\Pcmn\Lib;
 
+use DB;
+use Illuminate\Support\Facades\Schema;
+
+/**
+ * Class Menu
+ * @package Kluverp\Pcmn\Lib
+ */
 class Menu
 {
     /**
@@ -68,12 +75,27 @@ class Menu
         return $this->menuDef;
     }
 
+    /**
+     * Returns the number of records for given table.
+     *
+     * @param $table
+     * @return mixed
+     */
     private static function getRecordCount($table)
     {
-        return rand(4, 23);
+        if(Schema::hasTable($table)) {
+            return DB::table($table)->count();
+        }
+
+        return false;
     }
 
-
+    /**
+     * Returns the label for given table.
+     *
+     * @param $table
+     * @return string
+     */
     private function getLabel($table)
     {
         // check if key exists
@@ -84,6 +106,12 @@ class Menu
         return '';
     }
 
+    /**
+     * Returns the icon for given table.
+     *
+     * @param $table
+     * @return bool
+     */
     private function getIcon($table)
     {
         // check if key exists

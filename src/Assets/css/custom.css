@@ -21,3 +21,16 @@ main.container {
     border-top: 1px solid rgba(0, 0, 0, .125);
     border-radius: 0;
 }
+
+
+.dashboard-ready {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.list-group:last-child > .list-group-item {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    border-bottom-left-radius: .25rem;
+    border-bottom-right-radius: .25rem;
+}

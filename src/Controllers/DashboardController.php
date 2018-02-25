@@ -15,6 +15,8 @@ class DashboardController extends BaseController
      */
     public function index()
     {
-        return view($this->viewNamespace('dashboard'));
+        return view($this->viewNamespace('dashboard'), [
+            'breadcrumbs' => $this->breadcrumbs
+        ]);
     }
 }
