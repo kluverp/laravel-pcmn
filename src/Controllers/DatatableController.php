@@ -22,7 +22,9 @@ class DatatableController extends BaseController
     public function index($table, Request $request)
     {
         // create new TableConfig object
-        $config = new TableConfig($table, config('pcmn.tables.' . $table));
+        if (!$config = new TableConfig($table, config('pcmn.tables.' . $table))) {
+            return abort('Missing table configuration', 422);
+        }
 
         // init new DataTable processor
         $dataTable = new DataTable($config, $request->all());

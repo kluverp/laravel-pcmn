@@ -5,10 +5,8 @@ namespace Kluverp\Pcmn;
 use Kluverp\Pcmn\Lib\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
 use Kluverp\Pcmn\Lib\Form\Form;
-use DB;
+use Kluverp\Pcmn\Lib\Model;
 use Illuminate\Http\Request;
-use Kluverp\Pcmn\Lib\Form\DataHandler;
-use Kluverp\Pcmn\Lib\Breadcrumb;
 
 /**
  * Class ContentController
@@ -62,16 +60,10 @@ class ContentController extends BaseController
      */
     public function index($table)
     {
-        // create new TableConfig object
-        $config = new TableConfig($table, config('pcmn.tables.' . $table));
-
-        // init new DataTable processor
-        $dataTable = new DataTable($config);
-
         return view($this->viewNamespace('index'), [
-            'title' => $config->getTitle(),
-            'description' => $config->getDescription(),
-            'dataTable' => $dataTable,
+            'title' => $this->config->getTitle(),
+            'description' => $this->config->getDescription(),
+            'dataTable' => new DataTable($this->config),
             'breadcrumbs' => $this->breadcrumbs
         ]);
     }
@@ -79,14 +71,22 @@ class ContentController extends BaseController
     /**
      * Create new record.
      *
+     * @param $table
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create($table)
     {
+        // create new form
+        $form = new Form($this->config, [
+            'method' => 'post',
+            'action' => route('pcmn.content.store', $table)
+        ]);
+
         return view($this->viewNamespace('create'), [
             'title' => $this->config->getTitle('singular'),
             'description' => $this->config->getDescription(),
-            'form' => (new Form($this->config, null, route('pcmn.content.store', [$this->table])))
+            'form' => $form,
+            'breadcrumbs' => $this->breadcrumbs
         ]);
     }
 
@@ -99,18 +99,22 @@ class ContentController extends BaseController
      */
     public function store($table, Request $request)
     {
-        // init data handler object
-        $dataHandler = new DataHandler($this->config, $request->except(['_token', '_method']));
+        // create form
+        $form = new Form($this->config, [
+            'request' => $request
+        ]);
 
-        // insert new record
-        DB::table($table)->insert($dataHandler->getForStorage());
+        // validate the form
+        if (!$form->validate()) {
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
+        }
 
-        // get last insert ID
-        $id = DB::getPdo()->lastInsertId();
+        // create a new record
+        $recordId = Model::create($table, $form->getForStorage());
 
-        // retur to the edit screen
+        // return to the edit screen
         return redirect()
-            ->route('pcmn.content.edit', [$table, $id])
+            ->route('pcmn.content.edit', [$table, $recordId])
             ->with('alert_success', 'Opgelsagen!');
     }
 
@@ -123,22 +127,29 @@ class ContentController extends BaseController
 
     }
 
+    /**
+     * Edit an existing record.
+     *
+     * @param $table
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit($table, $id)
     {
         // if record cannot be found, show a 404 page
-        if (!$data = DB::table($table)->find($id)) {
+        if (!$model = Model::read($table, $id)) {
             abort(404);
         }
 
         // create new form object
         $form = new Form($this->config, [
-            'method' => 'post',
+            'method' => 'put',
             'action' => route('pcmn.content.update', [$table, $id]),
-            'data' => $data
+            'data' => $model
         ]);
 
         // add breadcrumb
-        $this->breadcrumbs->add('', $this->config->getTitle('singular') . ' ('. request()->route('id') .')');
+        $this->breadcrumbs->add('', $this->config->getTitle('singular') . ' (' . request()->route('id') . ')');
 
         return view($this->viewNamespace('edit'), [
             'title' => $this->config->getTitle('singular'),
@@ -159,25 +170,25 @@ class ContentController extends BaseController
     public function update($table, $id, Request $request)
     {
         // check if record exists
-        if (!$row = DB::table($table)->find($id)) {
+        if (!$model = Model::read($table, $id)) {
             abort(404);
         }
 
+        // create new form instance
         $form = new Form($this->config, [
-            'method' => 'post',
+            'method' => 'put',
             'action' => route('pcmn.content.update', [$table, $id]),
-            'request' => $request
+            'request' => $request,
+            'data' => $model
         ]);
 
+        // validate the form
         if (!$form->validate()) {
-            // return with messages
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
         }
 
-        // init data handler
-        $dataHandler = new DataHandler($this->config, $request->except(['_token', '_method']));
-
         // update model
-        DB::table($table)->where('id', $id)->update($dataHandler->getForStorage());
+        Model::update($table, $id, $form->getForStorage());
 
         return redirect()
             ->back()
@@ -194,7 +205,7 @@ class ContentController extends BaseController
     public function destroy($table, $id)
     {
         // remove the record
-        DB::table($table)->where('id', $id)->delete();
+        Model::delete($table, $id);
 
         return redirect()
             ->route('pcmn.content.index', [$table])

@@ -82,9 +82,10 @@ class DataTable
     {
         $data = [];
         foreach ($this->config->getIndex() as $key => $value) {
-            $value['name'] = $key;
-            $value['data'] = $key;
-            $data[] = $value;
+            $data[] = [
+                'name' => $key,
+                'data' => $key
+            ];
         }
 
         // row actions

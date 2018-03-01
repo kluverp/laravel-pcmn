@@ -77,7 +77,8 @@ class Form
     {
         // build each field in the form definition
         foreach ($this->config->getFields() as $name => $field) {
-            if ($obj = FieldFactory::make($name, $field, $this->getValue($name))) {
+            if ($fieldObj = FieldFactory::make($name, $field)) {
+                $fieldObj->setValue($this->getValue($name));
                 $this->fields[] = $obj;
             }
         }
@@ -144,5 +145,45 @@ class Form
     protected function getMethod()
     {
         return $this->method;
+    }
+
+    /**
+     * Returns the validation errors.
+     *
+     */
+    public function getErrors()
+    {
+
+    }
+
+    public function validate()
+    {
+        return true;
+        // have a formvalidator class validate our form
+        //$validator = FormValidator::make($form, $config);
+        /*if($validator->validates()) {
+            return true;
+        }
+
+        return $validator;*/
+    }
+
+    public function getForStorage()
+    {
+        $data = [];
+        foreach($this->getFields() as $field) {
+            if(request()->get($field->)) {
+                return     request()->get($name);
+            }
+        }
+
+        dd($data);
+
+        // init data handler
+        $dataHandler = new DataHandler($this->config, request()->except(['_token', '_method']));
+
+        dd($dataHandler->getForStorage());
+
+        return $dataHandler->getForStorage();
     }
 }

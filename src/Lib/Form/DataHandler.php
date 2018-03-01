@@ -23,6 +23,7 @@ class DataHandler
 
     /**
      * DataHandler constructor.
+     * @param TableConfig $config
      * @param $data
      */
     public function __construct(TableConfig $config, $data)
@@ -45,6 +46,11 @@ class DataHandler
             // skip field if flag is set
             if (!empty($params['skip'])) {
                 continue;
+            }
+
+            if($params['type'] == 'slug')
+            {
+                $data[$key . '_slug'] = str_slug($this->getStringData($key));
             }
 
             // set field to null, if not in POSTed data array (checkboxes)

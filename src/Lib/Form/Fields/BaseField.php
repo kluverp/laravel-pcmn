@@ -113,6 +113,12 @@ class BaseField
         return old($this->getName(), $this->value);
     }
 
+    public function getStorageValue()
+    {
+
+    }
+
+
     public function setValue($value)
     {
         $this->value = $value;
