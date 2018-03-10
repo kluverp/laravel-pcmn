@@ -79,7 +79,7 @@ class Form
         foreach ($this->config->getFields() as $name => $field) {
             if ($fieldObj = FieldFactory::make($name, $field)) {
                 $fieldObj->setValue($this->getValue($name));
-                $this->fields[] = $obj;
+                $this->fields[] = $fieldObj;
             }
         }
     }
@@ -156,6 +156,11 @@ class Form
 
     }
 
+    /**
+     * Validate the form values.
+     *
+     * @return bool
+     */
     public function validate()
     {
         return true;
@@ -168,16 +173,21 @@ class Form
         return $validator;*/
     }
 
+    /**
+     * Returns the form values for database storage.
+     *
+     * @return array
+     */
     public function getForStorage()
     {
-        $data = [];
+        /*$data = [];
         foreach($this->getFields() as $field) {
             if(request()->get($field->)) {
                 return     request()->get($name);
             }
         }
-
-        dd($data);
+*/
+        /*  dd($data);*/
 
         // init data handler
         $dataHandler = new DataHandler($this->config, request()->except(['_token', '_method']));

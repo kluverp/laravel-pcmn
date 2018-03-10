@@ -23,4 +23,21 @@
     {{-- the genereated form --}}
     {!! $form->html() !!}
 
+    @foreach($datatables as $datatable)
+        <h2>{{$datatable->title()}}</h2>
+        {!! $datatable->html() !!}
+    @endforeach
+
+@endsection
+
+@section('scripts')
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            @foreach($datatables as $datatable)
+                {!! $datatable->script() !!}
+            @endforeach
+        });
+    </script>
+
 @endsection

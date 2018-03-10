@@ -3,8 +3,8 @@
 namespace Kluverp\Pcmn\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
-use Kluverp\Pcmn\Lib\Menu;
+use Kluverp\Pcmn\Commands\TableConfig;
+use Kluverp\Pcmn\Lib\TableConfig\TableConfigRepository;
 
 class PcmnServiceProvider extends ServiceProvider
 {
@@ -32,6 +32,18 @@ class PcmnServiceProvider extends ServiceProvider
 
         // load translations
         $this->loadTranslationsFrom(__DIR__ . '/../Translations', 'pcmn');
+
+        // load commands
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                TableConfig::class,
+            ]);
+        }
+
+        // create a table config repository instance
+        $this->app->singleton(TableConfigRepository::class, function ($app) {
+            return new TableConfigRepository();
+        });
     }
 
     /**

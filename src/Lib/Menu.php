@@ -4,6 +4,7 @@ namespace Kluverp\Pcmn\Lib;
 
 use DB;
 use Illuminate\Support\Facades\Schema;
+use Kluverp\Pcmn\Lib\TableConfig\TableConfigRepository;
 
 /**
  * Class Menu
@@ -23,19 +24,19 @@ class Menu
      *
      * @var array
      */
-    private $tableDef = [];
+    private $tableRepo = [];
 
     /**
      * Menu constructor.
      *
      * @param array $menuDef
-     * @param array $tableDef
+     * @param TableConfigRepository $tableConfigRepo
      */
-    public function __construct(array $menuDef = [], $tableDef = [])
+    public function __construct(array $menuDef = [], TableConfigRepository $tableConfigRepo)
     {
         // set our definitions
         $this->menuDef = $menuDef;
-        $this->tableDef = $tableDef;
+        $this->tableRepo = $tableConfigRepo;
     }
 
     /**
@@ -51,23 +52,7 @@ class Menu
 
                 foreach ($item['tables'] as &$table) {
 
-                    if (isset($this->tableDef[$table])) {
-                        $table = [
-                            'label' => $this->getLabel($table),
-                            'icon' => $this->getIcon($table),
-                            'url' => route('pcmn.content.index', $table),
-                            'active' => false,
-                            'records' => self::getRecordCount($table)
-                        ];
-                    } else {
-                        $table = [
-                            'label' => '&lt;missing table definition&gt;',
-                            'icon' => false,
-                            'url' => false,
-                            'active' => false,
-                            'records' => 0
-                        ];
-                    }
+                    $table = $this->getItem($table);
                 }
             }
         }
@@ -76,49 +61,31 @@ class Menu
     }
 
     /**
-     * Returns the number of records for given table.
+     * Returns the menu item.
      *
      * @param $table
-     * @return mixed
+     * @return array
      */
-    private static function getRecordCount($table)
+    private function getItem($table)
     {
-        if(Schema::hasTable($table)) {
-            return DB::table($table)->count();
+        $item = [
+            'label' => '&lt;missing table definition&gt;',
+            'icon' => false,
+            'url' => false,
+            'records' => 0,
+            'active' => false
+        ];
+
+        if ($definition = $this->tableRepo->find($table)) {
+            $item = [
+                'label' => $definition->getTitle('plural'),
+                'icon' => $definition->getIcon(),
+                'url' => $definition->getIndexUrl(),
+                'records' => $definition->getRecordCount(),
+                'active' => false
+            ];
         }
 
-        return false;
-    }
-
-    /**
-     * Returns the label for given table.
-     *
-     * @param $table
-     * @return string
-     */
-    private function getLabel($table)
-    {
-        // check if key exists
-        if (isset($this->tableDef[$table]['title']['plural'])) {
-            return $this->tableDef[$table]['title']['plural'];
-        }
-
-        return '';
-    }
-
-    /**
-     * Returns the icon for given table.
-     *
-     * @param $table
-     * @return bool
-     */
-    private function getIcon($table)
-    {
-        // check if key exists
-        if (isset($this->tableDef[$table]['icon'])) {
-            return $this->tableDef[$table]['icon'];
-        }
-
-        return false;
+        return $item;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kluverp\Pcmn\Lib;
+namespace Kluverp\Pcmn\Lib\DataTable;
 
 use DB;
 
@@ -33,6 +33,16 @@ class DataTable
 
         // set datatable ajax parameters
         $this->parameters = $parameters;
+    }
+
+    /**
+     * Returns the title.
+     *
+     * @return mixed
+     */
+    public function title()
+    {
+        return $this->config->getTitle();
     }
 
     /**
@@ -96,10 +106,14 @@ class DataTable
             'sortable' => false
         ];
 
+        // "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        // "pageLength": 50,
+
         return sprintf('
         $("#table").DataTable({
             "processing": true,
-            "serverSide": true,
+            "serverSide": true,            
+            "paging": true,
             "ajax": "%s",
             "language": {
                 "url": "%s"
@@ -117,7 +131,7 @@ class DataTable
     public function ajax()
     {
         try {
-            $query = $this->query();
+            $collection = $this->query();
         } catch (\Exception $e) {
             return [
                 'draw' => (int)$this->parameters['draw'],
@@ -125,35 +139,19 @@ class DataTable
             ];
         }
 
-        foreach ($query as &$q) {
-            $q->actions = $this->getActions($q->id);
+        foreach ($collection as &$row) {
+            $row = new DataTableRow($row, $this->config);
         }
 
         // form data array
         $data = [
             'draw' => (int)$this->parameters['draw'],
-            'recordsTotal' => $query->count(),
-            'recordsFiltered' => $query->count(),
-            'data' => $query->toArray(),
+            'recordsTotal' => $collection->count(),
+            'recordsFiltered' => $collection->count(),
+            'data' => $collection->toArray(),
         ];
 
         return $data;
-    }
-
-    /**
-     * Returns the "Action" buttons for each row.
-     *
-     * @param $rowId
-     * @return string
-     */
-    private function getActions($rowId)
-    {
-        $buttons = '';
-        $buttons .= ' ' . $this->getReadBtn($rowId);
-        $buttons .= ' ' . $this->getUpdateBtn($rowId);
-        $buttons .= ' ' . $this->getDeleteBtn($rowId);
-
-        return '<div class="text-right">' . $buttons . '</div>';
     }
 
     /**
@@ -184,58 +182,8 @@ class DataTable
         // if user has permission to create new records
         if ($this->config->canCreate()) {
             return '
-            <a href="' . $this->route('create') . '" class="btn btn-success btn-sm">
+            <a href="' . $this->route('create', [$this->getTable()]) . '" class="btn btn-success btn-sm">
                 ' . self::trans('actions.create') . '
-            </a>';
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns the row delete button.
-     *
-     * @param $rowId
-     * @return string
-     */
-    private function getDeleteBtn($rowId)
-    {
-        if ($this->config->canDelete()) {
-            return '
-            <a class="btn btn-danger btn-sm" href="#">
-                ' . self::trans('actions.delete') . '
-            </a>';
-        }
-
-        return false;
-    }
-
-    /**
-     * @param $rowId
-     * @return bool|string
-     */
-    private function getUpdateBtn($rowId)
-    {
-        if ($this->config->canUpdate()) {
-            return '
-            <a class="btn btn-primary btn-sm" href="' . $this->route('edit', [$rowId]) . '">
-                ' . self::trans('actions.update') . '
-            </a>';
-        }
-
-        return false;
-    }
-
-    /**
-     * @param $rowId
-     * @return bool|string
-     */
-    private function getReadBtn($rowId)
-    {
-        if ($this->config->canRead()) {
-            return '
-            <a class="btn btn-default btn-sm" href="' . $this->route('show', [$rowId]) . '">
-                ' . self::trans('actions.read') . '
             </a>';
         }
 
@@ -252,14 +200,13 @@ class DataTable
         return $this->config->getTable();
     }
 
-
     /**
      * Returns a DataTable translation text for given key.
      *
      * @param $key
      * @return array|null|string
      */
-    private static function trans($key)
+    public static function trans($key)
     {
         return __('pcmn::datatable.' . $key);
     }
@@ -268,17 +215,11 @@ class DataTable
      * Returns content route.
      *
      * @param $route
-     * @param array $params
+     * @param array $parameters
      * @return string
      */
-    private function route($route, $parameters = [])
+    public static function route($route, $parameters = [])
     {
-        $params = [$this->getTable()];
-
-        if (is_array($parameters)) {
-            $params = array_merge($params, $parameters);
-        }
-
-        return route('pcmn.content.' . $route, $params);
+        return route('pcmn.content.' . $route, $parameters);
     }
 }

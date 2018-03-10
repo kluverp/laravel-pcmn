@@ -3,17 +3,14 @@
 namespace Kluverp\Pcmn\Lib;
 
 use DB;
+use Schema;
 
+/**
+ * Class Model
+ * @package Kluverp\Pcmn\Lib
+ */
 class Model
 {
-    private $table = '';
-
-    private $id = null;
-
-    public function __construct($table, $id)
-    {
-    }
-
     /**
      * Create a new record.
      *
@@ -62,5 +59,20 @@ class Model
     public static function delete($table, $id)
     {
         return DB::table($table)->where('id', $id)->delete();
+    }
+
+    /**
+     * Returns the number of records for given table.
+     *
+     * @param $table
+     * @return mixed
+     */
+    public static function recordCount($table)
+    {
+        if (Schema::hasTable($table)) {
+            return DB::table($table)->count();
+        }
+
+        return false;
     }
 }

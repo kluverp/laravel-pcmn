@@ -2,11 +2,12 @@
 
 namespace Kluverp\Pcmn;
 
-use Kluverp\Pcmn\Lib\DataTable;
+use Kluverp\Pcmn\Lib\DataTable\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
 use Kluverp\Pcmn\Lib\Form\Form;
 use Kluverp\Pcmn\Lib\Model;
 use Illuminate\Http\Request;
+use Kluverp\Pcmn\Lib\Xref;
 
 /**
  * Class ContentController
@@ -22,13 +23,6 @@ class ContentController extends BaseController
     protected $namespace = 'content';
 
     /**
-     * Table to view.
-     *
-     * @var \Illuminate\Routing\Route|null|object|string
-     */
-    protected $table = null;
-
-    /**
      * Table configuration object.
      *
      * @var TableConfig|null
@@ -42,11 +36,8 @@ class ContentController extends BaseController
     {
         parent::__construct();
 
-        // set the table parameter
-        $this->table = request()->route('table');
-
         // create new TableConfig object
-        $this->config = new TableConfig($this->table, config('pcmn.tables.' . $this->table), request()->route('id'));
+        $this->config = $this->tableConfigRepo->find(request()->route('table'));
 
         // add index url
         $this->breadcrumbs->add($this->config->getIndexUrl(), $this->config->getTitle('plural'));
@@ -55,10 +46,9 @@ class ContentController extends BaseController
     /**
      * Load content index.
      *
-     * @param $table
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index($table)
+    public function index()
     {
         return view($this->viewNamespace('index'), [
             'title' => $this->config->getTitle(),
@@ -134,7 +124,7 @@ class ContentController extends BaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($table, $id)
+    public function edit($table, $id, Xref $xrefs)
     {
         // if record cannot be found, show a 404 page
         if (!$model = Model::read($table, $id)) {
@@ -155,7 +145,8 @@ class ContentController extends BaseController
             'title' => $this->config->getTitle('singular'),
             'description' => $this->config->getDescription(),
             'form' => $form,
-            'breadcrumbs' => $this->breadcrumbs
+            'breadcrumbs' => $this->breadcrumbs,
+            'datatables' => $xrefs->datatables($this->config)
         ]);
     }
 

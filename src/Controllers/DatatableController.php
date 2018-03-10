@@ -3,7 +3,7 @@
 namespace Kluverp\Pcmn;
 
 use Illuminate\Http\Request;
-use Kluverp\Pcmn\Lib\DataTable;
+use Kluverp\Pcmn\Lib\DataTable\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
 
 /**

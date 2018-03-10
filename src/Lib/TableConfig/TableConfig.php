@@ -9,21 +9,21 @@ class TableConfig
      *
      * @var string
      */
-    private $table = '';
+    private $table = false;
 
     /**
      * Screen title (plural for overview, singular for record).
      *
      * @var string
      */
-    private $title = ['plural' => '', 'singular' => ''];
+    private $title = ['plural' => false, 'singular' => false];
 
     /**
      * A page description, telling the user what he can do with the current record(s).
      *
      * @var string
      */
-    private $description = '';
+    private $description = false;
 
     /**
      * The permissions on the datatables.
@@ -68,19 +68,11 @@ class TableConfig
     private $fields = [];
 
     /**
-     * The record ID for given table record.
-     *
-     * @var null
-     */
-    private $recordId = null;
-
-    /**
      * TableConfig constructor.
      * @param $table
      * @param $config
-     * @param null $recordId
      */
-    public function __construct($table, $config, $recordId = null)
+    public function __construct($table, $config)
     {
         // set table
         $this->table = $table;
@@ -88,14 +80,11 @@ class TableConfig
         // set fields
         if (is_array($config)) {
             foreach ($config as $key => $value) {
-                if (isset($this->$key)) {
-                    $this->$key = $value;
+                if (!empty($value)) {
+                    $this->{$key} = $value;
                 }
             }
         }
-
-        // set the record ID
-        $this->recordId = $recordId;
     }
 
     /**
@@ -106,6 +95,14 @@ class TableConfig
     public function getTable()
     {
         return $this->table;
+    }
+
+    /**
+     * Returns the icon for entry.
+     */
+    public function getIcon()
+    {
+        // TODO
     }
 
     /**
@@ -258,6 +255,8 @@ class TableConfig
     /**
      * Returns url to edit page.
      *
+     * @param string $action
+     * @param array $params
      * @return string
      */
     private function getUrl($action = 'index', $params = [])
@@ -278,10 +277,21 @@ class TableConfig
     /**
      * Returns url to edit page.
      *
+     * @param $recordId
      * @return string
      */
-    public function getEditUrl()
+    public function getEditUrl($recordId)
     {
-        return $this->getUrl('edit', [$this->table, $this->recordId]);
+        return $this->getUrl('edit', [$this->table, $recordId]);
+    }
+
+    /**
+     * Returns the number of records in this table.
+     *
+     * @return mixed
+     */
+    public function getRecordCount()
+    {
+        return Model::recordCount($this->getTable());
     }
 }

@@ -5,7 +5,7 @@ namespace Kluverp\Pcmn;
 use Illuminate\Routing\Controller;
 use Kluverp\Pcmn\Lib\Breadcrumb;
 use Kluverp\Pcmn\Lib\Menu;
-use View;
+use Kluverp\Pcmn\Lib\TableConfig\TableConfigRepository;
 
 /**
  * Class BaseController
@@ -48,12 +48,22 @@ class BaseController extends Controller
     protected $breadcrumbs;
 
     /**
+     * Table config container
+     *
+     * @var TableConfigRepository|null
+     */
+    protected $tableConfigRepo = null;
+
+    /**
      * BaseController constructor.
      */
     public function __construct()
     {
+        // init table config repository (singleton in app container)
+        $this->tableConfigRepo = app(TableConfigRepository::class);
+
         // load the menu
-        View::share('menu', (new Menu(config('pcmn.menu'), config('pcmn.tables')))->getMenu());
+        view()->share('menu', (new Menu(config('pcmn.menu'), $this->tableConfigRepo))->getMenu());
 
         // init new object
         $this->breadcrumbs = new Breadcrumb();
