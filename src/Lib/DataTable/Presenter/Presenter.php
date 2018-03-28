@@ -28,14 +28,31 @@ class Presenter
      * @return mixed
      * @throws \Exception
      */
-    public static function make($presenterName, $value)
+    public static function make($presenter, $value)
     {
-        $class = 'Kluverp\Pcmn\Lib\DataTable\Presenter\\' . studly_case($presenterName);
+        // if presenter is of Closur form, we init the Closure presenter class.
+        if($presenter instanceof \Closure){
+            return new Closure($value, $presenter);
+        };
+
+        // otherwise we translate the presenter name to a Class
+        $class = self::getPresenterClass($presenter);
         if (class_exists($class)) {
             return new $class($value);
         }
 
         return new self($value);
+    }
+
+    /**
+     * Translate the presenter to namespaced classname.
+     *
+     * @param $presenter
+     * @return string
+     */
+    public static function getPresenterClass($presenter)
+    {
+        return 'Kluverp\Pcmn\Lib\DataTable\Presenter\\' . studly_case($presenter);
     }
 
     /**

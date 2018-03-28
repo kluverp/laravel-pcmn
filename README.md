@@ -83,3 +83,33 @@ The following presenters can be used:
 ```text``` - The field contains a text and will be cut-off at 50 chars. This will be clear by the ellipsis at the end of the text. 
 
 ### Fields
+
+Basic types:
+- hidden
+- text
+- textarea
+- select
+- radio
+- checkbox
+- date
+- date-time
+
+##### hidden
+A hidden field. Does not show up in form, but can be used to have the ID column show up in datatable.
+
+##### text
+A basic text input field.
+
+#### textarea
+A textarea for writing large pieces of plain text.
+
+#### select
+A dropdown select box.
+
+Extended types:
+- slug (title input that also translates to a 'title_slug' field)
+- datepicker (a jQuery UI datepicker)
+- integer (a select box with integers, range can be given.
+- boolean (radio with yes/no options. Loads the Boolean presenter by default.)
+- editor (a WYSIWYG editor).
+
