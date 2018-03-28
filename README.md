@@ -47,3 +47,39 @@ Run the migrations
 ```shell
 php artisan migrate
 ```
+
+## Configuration 
+
+### Table config
+
+### Title
+The title field consists of two entries *singular* and *plural*. The plural version is shown on index pages. This page consists of a datatable with an overview of all underlying records. Hence the plural form.
+The singular field is used on a single record, when editing a record. This screen is shown as a form.
+
+### Description
+The description field is used to show a descriptive text above the datatable and the form. This should be a short text informing the user at what data he is looking. 
+
+### Permissions
+These are boolean values indicating what CRUD actions are allowed and what actions are not. 
+Sometimes you do not want a user to be able to remove a record. For instance when a records holds the texts for a 'homepage', you do not want the user to be able to remove this record
+
+### Index
+This array holds the fieldnames you want to show in the datatable view (the overview). Each field will represent a column.
+The order of the fields given, is the order of the columns shown.
+Each field has 3 options:
+
+#### Sortable (boolean)
+True, if this field is sortable. When sortable the column header will be clickable and the datatable can be sorted on this column.
+
+#### Searchable (boolean)
+When true, the colum will be searchable throught the search box. 
+
+#### Presenter (string)
+The presenter will format the column in a certain way for better representation.
+The following presenters can be used:
+
+```boolean``` - The value will be shown as true (green) or false (red) and in readable format. 
+
+```text``` - The field contains a text and will be cut-off at 50 chars. This will be clear by the ellipsis at the end of the text. 
+
+### Fields
