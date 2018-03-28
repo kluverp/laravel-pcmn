@@ -29,7 +29,7 @@ main.container {
     transform: translateY(-50%);
 }
 
-.list-group:last-child > .list-group-item {
+.list-group:last-child > .list-group-item.last {
     border-bottom: 1px solid rgba(0,0,0,.125);
     border-bottom-left-radius: .25rem;
     border-bottom-right-radius: .25rem;
