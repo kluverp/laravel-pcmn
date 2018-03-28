@@ -78,9 +78,13 @@ When true, the colum will be searchable throught the search box.
 The presenter will format the column in a certain way for better representation.
 The following presenters can be used:
 
-```boolean``` - The value will be shown as true (green) or false (red) and in readable format. 
+```boolean``` - The value will be shown as true (green) or false (red) and in human-readable format (yes == 1 and no == 0). 
 
-```text``` - The field contains a text and will be cut-off at 50 chars. This will be clear by the ellipsis at the end of the text. 
+```text``` - The field contains a text and will be cut-off at 50 chars. This will be clear by the ellipsis at the end of the text.
+
+```date``` - The field is represented as a date string.
+
+```function($value){ // my stuff }``` - And you can define your own Closure function as Presenter. This for easy on-the-fly presenting of data by your choosing. 
 
 ### Fields
 
