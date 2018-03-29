@@ -3,7 +3,7 @@
 namespace Kluverp\Pcmn\Lib\DataTable;
 
 use Kluverp\Pcmn\Lib\TableConfig;
-use Kluverp\Pcmn\Lib\DataTable\Presenter\PresenterFactorygi;
+use Kluverp\Pcmn\Lib\DataTable\Presenter\PresenterFactory;
 use DB;
 
 class DataTableRow

@@ -18,7 +18,6 @@ class PresenterFactory
         return $presenter->present();
     }
 
-
     /**
      * Factory method to make a new presenter.
      *
