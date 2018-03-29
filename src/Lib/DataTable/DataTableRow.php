@@ -51,9 +51,37 @@ class DataTableRow
     {
         foreach ($this->config->getIndex() as $key => $value) {
             if (!empty($value['presenter'])) {
-                $this->row->{$key} = PresenterFactory::apply($value['presenter'], $this->row->{$key});
+                $presenter = $value['presenter'];
+            } else {
+                $presenter = $this->config->getField($key)['type'];
             }
+
+            $presentedValue = PresenterFactory::apply($presenter, $this->getColumnValue($key));
+            $this->setColumnValue($key, $presentedValue);
         }
+    }
+
+    /**
+     * Returns the column value for given key (the database field value).
+     *
+     * @param $key
+     * @return mixed
+     */
+    private function getColumnValue($key)
+    {
+        return $this->row->{$key};
+    }
+
+    /**
+     * Set (overwrite) the row' field value with new (presented) value.
+     *
+     * @param $key
+     * @param $value
+     * @return mixed
+     */
+    private function setColumnValue($key, $value)
+    {
+        return $this->row->{$key} = $value;
     }
 
     /**
@@ -82,7 +110,8 @@ class DataTableRow
     {
         if ($this->config->canDelete()) {
             return '
-            <a class="btn btn-danger btn-sm" href="' . DataTable::route('destroy', [$this->config->getTable(), $rowId]) . '">
+            <a class="btn btn-danger btn-sm" href="' . DataTable::route('destroy',
+                    [$this->config->getTable(), $rowId]) . '">
                 ' . DataTable::trans('actions.delete') . '
             </a>';
         }

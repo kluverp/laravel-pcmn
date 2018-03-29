@@ -39,7 +39,7 @@ class PresenterFactory
             return new $class($value);
         }
 
-        return new self($value);
+        return new Presenter($value);
     }
 
     /**

@@ -71,7 +71,7 @@ class DataTable
             if ($field = $this->config->getField($index, 'label')) {
                 $columns[$index] = $field;
             } else {
-                $columns[] = '';
+                $columns[] = '&lt;'. $index .'&gt;';
             }
         }
 

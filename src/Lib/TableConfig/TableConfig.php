@@ -2,6 +2,8 @@
 
 namespace Kluverp\Pcmn\Lib;
 
+use Kluverp\Pcmn\Lib\TableConfig\Fields\Select;
+
 class TableConfig
 {
     /**
@@ -82,6 +84,16 @@ class TableConfig
             foreach ($config as $key => $value) {
                 if (!empty($value)) {
                     $this->{$key} = $value;
+                }
+
+
+                if($key == 'fields') {
+                    foreach($value as $field => $options) {
+                        if($options['type'] == 'select') {
+                            $this->fields[$field] = new Select($options);
+                        }
+                    }
+
                 }
             }
         }
@@ -182,6 +194,11 @@ class TableConfig
     public function getField($fieldname = '', $attribute = false)
     {
         if (isset($this->fields[$fieldname])) {
+
+            if(is_object($this->fields[$fieldname]) && $attribute) {
+                return $this->fields[$fieldname]->{$attribute};
+            }
+
             if ($attribute && isset($this->fields[$fieldname][$attribute])) {
                 return $this->fields[$fieldname][$attribute];
             }
