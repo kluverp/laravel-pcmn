@@ -3,7 +3,7 @@
 namespace Kluverp\Pcmn\Lib\DataTable;
 
 use Kluverp\Pcmn\Lib\TableConfig;
-use Kluverp\Pcmn\Lib\DataTable\Presenter\Presenter;
+use Kluverp\Pcmn\Lib\DataTable\Presenter\PresenterFactorygi;
 use DB;
 
 class DataTableRow
@@ -51,7 +51,7 @@ class DataTableRow
     {
         foreach ($this->config->getIndex() as $key => $value) {
             if (!empty($value['presenter'])) {
-                $this->row->{$key} = Presenter::apply($value['presenter'], $this->row->{$key});
+                $this->row->{$key} = PresenterFactory::apply($value['presenter'], $this->row->{$key});
             }
         }
     }
