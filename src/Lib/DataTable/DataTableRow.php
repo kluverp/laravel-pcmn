@@ -53,10 +53,10 @@ class DataTableRow
             if (!empty($value['presenter'])) {
                 $presenter = $value['presenter'];
             } else {
-                $presenter = $this->config->getField($key)['type'];
+                $presenter = $this->config->getFieldAttr($key, 'type');
             }
 
-            $presentedValue = PresenterFactory::apply($presenter, $this->getColumnValue($key));
+            $presentedValue = PresenterFactory::apply($presenter, $this->getColumnValue($key), $this->config->getField($key));
             $this->setColumnValue($key, $presentedValue);
         }
     }

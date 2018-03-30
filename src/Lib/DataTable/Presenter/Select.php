@@ -13,6 +13,26 @@ class Select extends Presenter
      */
     public function present()
     {
-        return $this->value . 'sel';
+        if ($options = $this->getOptions()) {
+            if (isset($options[$this->value])) {
+                return $options[$this->value];
+            }
+        }
+
+        return $this->value;
+    }
+
+    /**
+     * Returns the options for this field.
+     *
+     * @return array
+     */
+    private function getOptions()
+    {
+        if (!empty($this->field['options'])) {
+            return $this->field['options'];
+        }
+
+        return [];
     }
 }

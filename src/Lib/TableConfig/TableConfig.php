@@ -87,14 +87,14 @@ class TableConfig
                 }
 
 
-                if($key == 'fields') {
+                /*if($key == 'fields') {
                     foreach($value as $field => $options) {
                         if($options['type'] == 'select') {
                             $this->fields[$field] = new Select($options);
                         }
                     }
 
-                }
+                }*/
             }
         }
     }
@@ -195,15 +195,33 @@ class TableConfig
     {
         if (isset($this->fields[$fieldname])) {
 
-            if(is_object($this->fields[$fieldname]) && $attribute) {
+            /*if(is_object($this->fields[$fieldname]) && $attribute) {
                 return $this->fields[$fieldname]->{$attribute};
-            }
+            }*/
 
             if ($attribute && isset($this->fields[$fieldname][$attribute])) {
                 return $this->fields[$fieldname][$attribute];
             }
 
             return $this->fields[$fieldname];
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns a field attribute.
+     *
+     * @param $fieldname
+     * @param $attr
+     * @return bool
+     */
+    public function getFieldAttr($fieldname, $attr)
+    {
+        if ($field = $this->getField($fieldname)) {
+            if (!empty($field[$attr])) {
+                return $field[$attr];
+            }
         }
 
         return false;

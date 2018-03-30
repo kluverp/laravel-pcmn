@@ -2,6 +2,8 @@
 
 namespace Kluverp\Pcmn\Lib\DataTable\Presenter;
 
+use Kluverp\Pcmn\Lib\TableConfig;
+
 class Presenter
 {
     /**
@@ -12,12 +14,19 @@ class Presenter
     protected $value = null;
 
     /**
+     *
+     * @var null
+     */
+    protected $field = [];
+
+    /**
      * Boolean constructor.
      * @param $value
      */
-    public function __construct($value)
+    public function __construct($value, $field = [])
     {
         $this->value = $value;
+        $this->field = $field;
     }
 
     /**
