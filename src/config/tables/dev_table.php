@@ -14,9 +14,28 @@ return [
     ],
     'index' => [
         'id' => ['sortable' => true, 'searchable' => true],
-        'slug' => ['sortable' => true, 'searchable' => true]
+        'order' => ['presenter' => function($value) {
+            return '<span class="badge badge-info">' . $value .  '</span>';
+        }],
+        'active' => ['sortable' => true, 'searchable' => false, 'presenter' => 'boolean'],
+        'slug' => ['sortable' => true, 'searchable' => true],
+        'select_id' => [],
+        'textarea' => ['sortable' => true, 'searchable' => true, 'presenter' => 'text']
     ],
     'fields' => [
+        'id' => [
+            'type' => 'hidden',
+            'label' => 'ID'
+        ],
+        'active' => [
+            'type' => 'boolean',
+            'label' => 'Active',
+            'help_text' => 'Item is published yes or no.'
+        ],
+        'order' => [
+            'type' => 'text',
+            'label' => 'Order'
+        ],
         'input' => [
             'type'        => 'input',
             'label'       => 'Input',
@@ -27,7 +46,7 @@ return [
         'select_id' => [
             'type'        => 'select',
             'label'       => 'Select',
-            'options'     => "Ja,1,ffffff|Nee,0,ff00ee", // if left out, source comes from DB table
+            'options'     => ['Ja', 'Nee'],
             'help_text'   => 'This is a help text'
         ],
         'radio_id' => [
