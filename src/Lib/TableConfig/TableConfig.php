@@ -46,7 +46,7 @@ class TableConfig
      *
      * @var bool
      */
-    private $singleRecord = false;
+    private $single_record = false;
 
     /**
      * The message to show the user if no records are found.
@@ -82,19 +82,9 @@ class TableConfig
         // set fields
         if (is_array($config)) {
             foreach ($config as $key => $value) {
-                if (!empty($value)) {
+                if (!empty($value) && property_exists($this, $key)) {
                     $this->{$key} = $value;
                 }
-
-
-                /*if($key == 'fields') {
-                    foreach($value as $field => $options) {
-                        if($options['type'] == 'select') {
-                            $this->fields[$field] = new Select($options);
-                        }
-                    }
-
-                }*/
             }
         }
     }
@@ -161,7 +151,7 @@ class TableConfig
      */
     public function isSingleRecord()
     {
-        return (bool)$this->singleRecord;
+        return (bool)$this->single_record;
     }
 
     /**
@@ -297,6 +287,22 @@ class TableConfig
     private function getUrl($action = 'index', $params = [])
     {
         return route('pcmn.content.' . $action, $params);
+    }
+
+    /**
+     * Returns the URL for use in menu.
+     * This returns either the URL to index page, or an URL to the first record in
+     * case of a 'single_record' item.
+     *
+     * @return string
+     */
+    public function getMenuUrl()
+    {
+        if($this->isSingleRecord()) {
+            return $this->getEditUrl(Model::firstId($this->table));
+        }
+
+        return $this->getIndexUrl();
     }
 
     /**

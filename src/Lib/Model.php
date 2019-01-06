@@ -75,4 +75,15 @@ class Model
 
         return false;
     }
+
+    public static function firstId($table)
+    {
+        if(Schema::hasTable($table)) {
+            if($record = DB::table($table)->first()) {
+                return $record->id;
+            }
+        }
+
+        return false;
+    }
 }

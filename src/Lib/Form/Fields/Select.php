@@ -49,21 +49,28 @@ class Select extends BaseField
             return $options;
         }
 
-        // parse the options string and split on pipe
-        $rawOptions = explode('|', $configOptions['options']);
-
         // add empty option if set
         if (!empty($configOptions['showEmpty'])) {
             $options[] = new FieldOption($configOptions['showEmpty'], null, '');
         }
 
-        // build the options array
-        foreach ($rawOptions as $rawOption) {
-            // explode the options str
-            $values = explode(',', $rawOption);
+        if (is_string($configOptions['options'])) {
+            // parse the options string and split on pipe
+            $rawOptions = explode('|', $configOptions['options']);
+            // build the options array
+            foreach ($rawOptions as $rawOption) {
+                // explode the options str
+                $values = explode(',', $rawOption);
 
-            // add parsed option
-            $options[] = new FieldOption($values[0], $values[1], $values[2]);
+                // add parsed option
+                $options[] = new FieldOption($values[0], $values[1], $values[2]);
+            }
+        } else {
+            $rawOptions = $configOptions['options'];
+
+            foreach ($rawOptions as $key => $value) {
+                $options[] = new FieldOption($key, $value);
+            }
         }
 
         // set options array

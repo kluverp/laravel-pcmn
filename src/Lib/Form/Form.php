@@ -77,8 +77,7 @@ class Form
     {
         // build each field in the form definition
         foreach ($this->config->getFields() as $name => $field) {
-            if ($fieldObj = FieldFactory::make($name, $field)) {
-                $fieldObj->setValue($this->getValue($name));
+            if ($fieldObj = FieldFactory::make($name, $field, $this->getValue($name))) {
                 $this->fields[] = $fieldObj;
             }
         }

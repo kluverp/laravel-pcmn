@@ -80,7 +80,7 @@ class Menu
             $item = [
                 'label' => $definition->getTitle('plural'),
                 'icon' => $definition->getIcon(),
-                'url' => $definition->getIndexUrl(),
+                'url' => $definition->getMenuUrl(),
                 'records' => $definition->getRecordCount(),
                 'active' => false
             ];

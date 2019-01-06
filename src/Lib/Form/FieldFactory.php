@@ -24,7 +24,7 @@ class FieldFactory
 
         // check if the class exists
         if (!class_exists($className)) {
-            throw new \Exception('Invalid field type specified (' . $config['type'] . ')');
+            throw new \Exception('Invalid field type specified: "' . $config['type'] . '".');
         }
 
         return new $className($name, $config, $value);

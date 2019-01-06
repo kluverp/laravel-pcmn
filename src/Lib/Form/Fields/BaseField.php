@@ -34,6 +34,8 @@ class BaseField
      */
     protected $type = 'text';
 
+    protected $view = 'input';
+
     /**
      * BaseField constructor.
      * @param $name
@@ -141,6 +143,9 @@ class BaseField
      */
     protected function getView()
     {
+        if($this->view) {
+            return 'pcmn::content.form.fields.' . snake_case(lcfirst($this->view));
+        }
         return 'pcmn::content.form.fields.' . snake_case(lcfirst(class_basename(get_class($this))));
     }
 

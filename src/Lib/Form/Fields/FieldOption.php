@@ -32,7 +32,7 @@ class FieldOption
      * @param $value
      * @param $color
      */
-    public function __construct($label, $value, $color)
+    public function __construct($label, $value, $color = null)
     {
         $this->label = $label;
         $this->value = $value;

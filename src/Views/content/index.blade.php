@@ -10,13 +10,13 @@
         <small class="text-muted">overzicht</small>
     </h1>
 
-    <hr>
-
     @if(!empty($description))
         <p class="lead">
             {{ $description }}
         </p>
     @endif
+
+    <hr>
 
     {!! $dataTable->html() !!}
 

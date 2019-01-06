@@ -2,6 +2,7 @@
 
 namespace Kluverp\Pcmn;
 
+use App\Models\BaseModel;
 use Kluverp\Pcmn\Lib\DataTable\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
 use Kluverp\Pcmn\Lib\Form\Form;
@@ -27,7 +28,9 @@ class ContentController extends BaseController
      *
      * @var TableConfig|null
      */
-    protected $config = null;
+    protected $table = null;
+
+    protected $tableName = null;
 
     /**
      * ContentController constructor.
@@ -36,11 +39,16 @@ class ContentController extends BaseController
     {
         parent::__construct();
 
+        $this->tableName = request()->route('table');
+
         // create new TableConfig object
-        $this->config = $this->tableConfigRepo->find(request()->route('table'));
+        $this->table = $this->tableConfigRepo->find($this->tableName);
 
         // add index url
-        $this->breadcrumbs->add($this->config->getIndexUrl(), $this->config->getTitle('plural'));
+        $this->breadcrumbs->add($this->table->getIndexUrl(), $this->table->getTitle('plural'));
+
+        // create new model instance
+        $this->model = new BaseModel(request()->route('table'));
     }
 
     /**
@@ -51,9 +59,9 @@ class ContentController extends BaseController
     public function index()
     {
         return view($this->viewNamespace('index'), [
-            'title' => $this->config->getTitle(),
-            'description' => $this->config->getDescription(),
-            'dataTable' => new DataTable($this->config),
+            'title' => $this->table->getTitle(),
+            'description' => $this->table->getDescription(),
+            'dataTable' => new DataTable($this->table),
             'breadcrumbs' => $this->breadcrumbs
         ]);
     }
@@ -69,7 +77,8 @@ class ContentController extends BaseController
         // create new form
         $form = new Form($this->config, [
             'method' => 'post',
-            'action' => route('pcmn.content.store', $table)
+            'action' => route('pcmn.content.store', $table),
+            'model' => $this->model
         ]);
 
         return view($this->viewNamespace('create'), [
@@ -126,27 +135,25 @@ class ContentController extends BaseController
      */
     public function edit($table, $id, Xref $xrefs)
     {
-        // if record cannot be found, show a 404 page
-        if (!$model = Model::read($table, $id)) {
-            abort(404);
-        }
+        // show 404 page, in case model is not found
+        $model = $this->model->findOrFail($id);
 
-        // create new form object
-        $form = new Form($this->config, [
+        // create form
+        $form = new Form($this->table, [
             'method' => 'put',
             'action' => route('pcmn.content.update', [$table, $id]),
-            'data' => $model
+            'model' => $model
         ]);
 
         // add breadcrumb
-        $this->breadcrumbs->add('', $this->config->getTitle('singular') . ' (' . request()->route('id') . ')');
+        $this->breadcrumbs->add('', $this->table->getTitle('singular') . ' (' . request()->route('id') . ')');
 
         return view($this->viewNamespace('edit'), [
-            'title' => $this->config->getTitle('singular'),
-            'description' => $this->config->getDescription(),
+            'title' => $this->table->getTitle('singular'),
+            'description' => $this->table->getDescription(),
             'form' => $form,
             'breadcrumbs' => $this->breadcrumbs,
-            'datatables' => $xrefs->datatables($this->config)
+            'datatables' => $xrefs->datatables($this->table)
         ]);
     }
 

@@ -11,14 +11,14 @@
         <small class="text-muted">edit</small>
     </h1>
 
-    <hr>
-
     {{-- page description --}}
     @if(!empty($description))
         <p class="lead">
             {{ $description }}
         </p>
     @endif
+
+    <hr>
 
     {{-- the genereated form --}}
     {!! $form->html() !!}
