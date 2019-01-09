@@ -11,7 +11,7 @@ class DataTable
      *
      * @var string
      */
-    private $config = '';
+    private $config = null;
 
     /**
      * The DataTable parameters.
@@ -19,6 +19,10 @@ class DataTable
      * @var array
      */
     private $parameters = [];
+
+    private $transNs = 'pcmn::datatable';
+    private $routeNs = 'pcmn.datatable';
+    private $viewNs = 'pcmn::datatable';
 
     /**
      * DataTable constructor.
@@ -36,25 +40,19 @@ class DataTable
     }
 
     /**
-     * Returns the title.
-     *
-     * @return mixed
-     */
-    public function title()
-    {
-        return $this->config->getTitle();
-    }
-
-    /**
      * Outputs the HTML part for use in View.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function html()
     {
-        return view('pcmn::datatable.table', [
-            'thead' => $this->getTableHead()
-        ]);
+        return view($this->viewNs . '.table', [
+            'thead' => $this->getTableHead(),
+            'config' => $this->config,
+            'transNs' => $this->transNs,
+            'routeNs' => $this->routeNs,
+            'data' => $this->data()
+        ])->render();
     }
 
     /**
@@ -75,11 +73,6 @@ class DataTable
             }
         }
 
-        // add the create button if permissions allow it
-        if ($createBtn = $this->getCreateBtn()) {
-            $columns[] = '<div class="text-right">' . $createBtn . '</div>';
-        }
-
         return $columns;
     }
 
@@ -88,7 +81,7 @@ class DataTable
      *
      * @return string
      */
-    public function script()
+    public function data()
     {
         $data = [];
         foreach ($this->config->getIndex() as $key => $value) {
@@ -106,21 +99,7 @@ class DataTable
             'sortable' => false
         ];
 
-        // "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        // "pageLength": 50,
-
-        return sprintf('
-        $("#table").DataTable({
-            "processing": true,
-            "serverSide": true,            
-            "paging": true,
-            "ajax": "%s",
-            "language": {
-                "url": "%s"
-            },
-            "columns": %s
-        });', route("pcmn.datatable.index", $this->getTable()), config('pcmn.datatable.languageUrl'),
-            json_encode($data));
+        return $data;
     }
 
     /**
@@ -164,62 +143,11 @@ class DataTable
         $cols = ['id'];
         $cols = array_merge($cols, array_keys($this->config->getIndex()));
 
-        return DB::table($this->getTable())
+        return DB::table($this->config->getTable())
             ->select($cols)
             ->skip($this->parameters['start'])
             ->take($this->parameters['length'])
             ->orderBy($cols[$this->parameters['order'][0]['column']], $this->parameters['order'][0]['dir'])
             ->get();
-    }
-
-    /**
-     * Returns the create button if user is allowed to create new records.
-     *
-     * @return string
-     */
-    private function getCreateBtn()
-    {
-        // if user has permission to create new records
-        if ($this->config->canCreate()) {
-            return '
-            <a href="' . $this->route('create', [$this->getTable()]) . '" class="btn btn-success btn-sm">
-                ' . self::trans('actions.create') . '
-            </a>';
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns the table name to build the table for.
-     *
-     * @return mixed
-     */
-    private function getTable()
-    {
-        return $this->config->getTable();
-    }
-
-    /**
-     * Returns a DataTable translation text for given key.
-     *
-     * @param $key
-     * @return array|null|string
-     */
-    public static function trans($key)
-    {
-        return __('pcmn::datatable.' . $key);
-    }
-
-    /**
-     * Returns content route.
-     *
-     * @param $route
-     * @param array $parameters
-     * @return string
-     */
-    public static function route($route, $parameters = [])
-    {
-        return route('pcmn.content.' . $route, $parameters);
     }
 }

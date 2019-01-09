@@ -4,7 +4,7 @@
 
     <div class="container auth">
 
-        @include('pcmn::_components.messages')
+        @include('pcmn::_components.alerts')
 
         <img class="mx-auto d-block" src="{{ url('vendor/pcmn/img/pacman-logo_77x50.png') }}"/>
 

@@ -7,7 +7,7 @@
 
     <h1>
         {{ $title }}
-        <small class="text-muted">overzicht</small>
+        <small class="text-muted">@lang($transNs . '.index')</small>
     </h1>
 
     @if(!empty($description))
@@ -21,19 +21,3 @@
     {!! $dataTable->html() !!}
 
 @endsection
-
-
-@section('scripts')
-
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-
-            {!! $dataTable->script() !!}
-
-        });
-
-    </script>
-
-@endsection
-

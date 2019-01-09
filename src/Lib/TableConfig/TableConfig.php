@@ -34,9 +34,9 @@ class TableConfig
      */
     private $permissions = [
         'create' => true,
-        'read' => true,
+        'show' => true,
         'edit' => true,
-        'delete' => true
+        'destroy' => true
     ];
 
     /**
@@ -232,9 +232,9 @@ class TableConfig
      *
      * @return bool
      */
-    public function canRead()
+    public function canShow()
     {
-        return $this->permission('read');
+        return $this->permission('show');
     }
 
     /**
@@ -242,9 +242,9 @@ class TableConfig
      *
      * @return bool
      */
-    public function canUpdate()
+    public function canEdit()
     {
-        return $this->permission('update');
+        return $this->permission('edit');
     }
 
     /**
@@ -252,9 +252,9 @@ class TableConfig
      *
      * @return bool
      */
-    public function canDelete()
+    public function canDestroy()
     {
-        return $this->permission('delete');
+        return $this->permission('destroy');
     }
 
     /**
@@ -266,8 +266,8 @@ class TableConfig
     private function permission($permission)
     {
         // check if given permission is valid
-        if (!in_array($permission, ['create', 'read', 'update', 'delete'])) {
-            throw new \InvalidArgumentException('Given permission is not one of "create, read, update or delete".');
+        if (!in_array($permission, ['create', 'show', 'edit', 'destroy'])) {
+            throw new \InvalidArgumentException('Given permission is not one of "create, show, edit or destroy".');
         }
         // check if values has been set, otherwise default false
         if (isset($this->permissions[$permission])) {

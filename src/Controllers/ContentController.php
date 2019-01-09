@@ -22,6 +22,7 @@ class ContentController extends BaseController
      * @var string
      */
     protected $namespace = 'content';
+    private $transNs = 'pcmn::content';
 
     /**
      * Table configuration object.
@@ -63,7 +64,8 @@ class ContentController extends BaseController
             'title' => $this->table->getTitle(),
             'description' => $this->table->getDescription(),
             'dataTable' => new DataTable($this->table),
-            'breadcrumbs' => $this->breadcrumbs
+            'breadcrumbs' => $this->breadcrumbs,
+            'transNs' => $this->transNs
         ]);
     }
 
