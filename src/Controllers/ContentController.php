@@ -2,7 +2,7 @@
 
 namespace Kluverp\Pcmn;
 
-use App\Models\BaseModel;
+use Kluverp\Pcmn\Models\BaseModel;
 use Kluverp\Pcmn\Lib\DataTable\DataTable;
 use Kluverp\Pcmn\Lib\TableConfig;
 use Kluverp\Pcmn\Lib\Form\Form;
@@ -29,8 +29,9 @@ class ContentController extends BaseController
      * @var TableConfig|null
      */
     protected $table = null;
-
     protected $tableName = null;
+
+    protected $model = null;
 
     /**
      * ContentController constructor.
@@ -47,8 +48,8 @@ class ContentController extends BaseController
         // add index url
         $this->breadcrumbs->add($this->table->getIndexUrl(), $this->table->getTitle('plural'));
 
-        // create new model instance
-        $this->model = new BaseModel(request()->route('table'));
+        // create new model
+        $this->model = new Model($this->tableName);
     }
 
     /**
@@ -136,13 +137,12 @@ class ContentController extends BaseController
     public function edit($table, $id, Xref $xrefs)
     {
         // show 404 page, in case model is not found
-        $model = $this->model->findOrFail($id);
+        $model = $this->model->find($id);
 
         // create form
-        $form = new Form($this->table, [
+        $form = new Form($this->table, $model, [
             'method' => 'put',
-            'action' => route('pcmn.content.update', [$table, $id]),
-            'model' => $model
+            'action' => route('pcmn.content.update', [$table, $id])
         ]);
 
         // add breadcrumb
@@ -167,30 +167,33 @@ class ContentController extends BaseController
      */
     public function update($table, $id, Request $request)
     {
-        // check if record exists
-        if (!$model = Model::read($table, $id)) {
-            abort(404);
+        // get the model instance
+        if(!$model = $this->model->find($id)) {
+            return abort();
         }
 
         // create new form instance
-        $form = new Form($this->config, [
+        $form = new Form($this->table, $model, [
             'method' => 'put',
             'action' => route('pcmn.content.update', [$table, $id]),
             'request' => $request,
-            'data' => $model
         ]);
 
         // validate the form
-        if (!$form->validate()) {
-            return redirect()->back()->withErrors($form->getErrors())->withInput();
+        $form->getValidator()->validate();
+
+        /*
+        if (true) {
+            return redirect()->back()->withErrors($form->getValidator())->withInput();
         }
+        */
 
         // update model
-        Model::update($table, $id, $form->getForStorage());
+        $this->model->update($id, $form->getForStorage());
 
         return redirect()
             ->back()
-            ->with('alert_success', 'Opgelsagen!');
+            ->with('alert_success', $this->trans('alerts.updated'));
     }
 
     /**
@@ -207,6 +210,6 @@ class ContentController extends BaseController
 
         return redirect()
             ->route('pcmn.content.index', [$table])
-            ->with('alert_danger', 'Verwijderd!');
+            ->with('alert_danger', $this->trans('alerts.destroyed'));
     }
 }

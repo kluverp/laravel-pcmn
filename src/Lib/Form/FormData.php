@@ -5,7 +5,7 @@ namespace Kluverp\Pcmn\Lib\Form;
 
 use Kluverp\Pcmn\Lib\TableConfig;
 
-class DataHandler
+class FormData
 {
     /**
      * Form data.

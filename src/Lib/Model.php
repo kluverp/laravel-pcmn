@@ -11,20 +11,21 @@ use Schema;
  */
 class Model
 {
-    /**
-     * Create a new record.
-     *
-     * @param $table
-     * @param $data
-     * @return mixed
-     */
-    public static function create($table, $data)
-    {
-        // insert new record
-        DB::table($table)->insert($data);
+    private $table = null;
 
-        // get last insert ID
-        return DB::getPdo()->lastInsertId();
+    public function __construct($table)
+    {
+        $this->setTable($table);
+    }
+
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    public function setTable($table)
+    {
+        return $this->table = $table;
     }
 
     /**
@@ -34,10 +35,27 @@ class Model
      * @param $id
      * @return mixed
      */
-    public static function read($table, $id)
+    public function find($id)
     {
-        return DB::table($table)->find($id);
+        return DB::table($this->getTable())->find($id);
     }
+
+    /**
+     * Create a new record.
+     *
+     * @param $table
+     * @param $data
+     * @return mixed
+     */
+    public function create($data)
+    {
+        // insert new record
+        DB::table($this->getTable())->insert($data);
+
+        // get last insert ID
+        return DB::getPdo()->lastInsertId();
+    }
+
 
     /**
      * Update record.
@@ -46,9 +64,9 @@ class Model
      * @param $id
      * @param $data
      */
-    public static function update($table, $id, $data)
+    public function update($id, array $data = [])
     {
-        return DB::table($table)
+        return DB::table($this->getTable())
             ->where('id', $id)
             ->update($data);
     }
@@ -56,9 +74,11 @@ class Model
     /**
      * Delete record.
      */
-    public static function delete($table, $id)
+    public function delete($id)
     {
-        return DB::table($table)->where('id', $id)->delete();
+        return DB::table($this->getTable())
+            ->where('id', $id)
+            ->delete();
     }
 
     /**
@@ -78,8 +98,8 @@ class Model
 
     public static function firstId($table)
     {
-        if(Schema::hasTable($table)) {
-            if($record = DB::table($table)->first()) {
+        if (Schema::hasTable($table)) {
+            if ($record = DB::table($table)->first()) {
                 return $record->id;
             }
         }

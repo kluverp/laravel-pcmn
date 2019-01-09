@@ -20,23 +20,16 @@ class FieldOption
     protected $value = null;
 
     /**
-     * Color string in hex format.
-     *
-     * @var string
-     */
-    protected $color = '';
-
-    /**
      * FieldOption constructor.
+     *
      * @param $label
      * @param $value
      * @param $color
      */
-    public function __construct($label, $value, $color = null)
+    public function __construct($label, $value)
     {
         $this->label = $label;
         $this->value = $value;
-        $this->color = $color;
     }
 
     /**
@@ -47,16 +40,6 @@ class FieldOption
     public function getValue()
     {
         return $this->value;
-    }
-
-    /**
-     * Returns the option color.
-     *
-     * @return string
-     */
-    public function getColor()
-    {
-        return $this->color;
     }
 
     /**

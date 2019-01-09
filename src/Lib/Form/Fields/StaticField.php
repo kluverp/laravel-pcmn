@@ -2,7 +2,7 @@
 
 namespace Kluverp\Pcmn\Lib\Form\Fields;
 
-class Boolean extends Radio
+class StaticField extends BaseField
 {
 
 }

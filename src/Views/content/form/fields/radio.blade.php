@@ -2,7 +2,7 @@
     <div class="col-sm-2">{{ $label }}</div>
     <div class="col-sm-10">
         @foreach($options as $option)
-            <div class="form-check">
+            <div class="form-check-inline">
                 <label class="form-check-label" for="{{ $id }}_{{ $loop->index }}">
                     <input class="form-check-input" type="radio" name="{{ $name }}" id="{{ $id }}_{{ $loop->index }}"
                            value="{{ $option->getValue() }}"

@@ -3,6 +3,8 @@
 namespace Kluverp\Pcmn\Lib\Form;
 
 use Kluverp\Pcmn\Lib\TableConfig;
+use Kluverp\Pcmn\Models\BaseModel;
+use Illuminate\Support\Facades\Validator;
 
 class Form
 {
@@ -25,7 +27,7 @@ class Form
      *
      * @var array
      */
-    private $data = [];
+    private $model = null;
 
     /**
      * The form action.
@@ -46,7 +48,7 @@ class Form
      * @param TableConfig $config
      * @param $options
      */
-    public function __construct(TableConfig $config, $options = [])
+    public function __construct(TableConfig $config, $model, $options = [])
     {
         // set config
         $this->config = $config;
@@ -62,9 +64,7 @@ class Form
         }
 
         // set data record
-        if (!empty($options['data'])) {
-            $this->data = $options['data'];
-        }
+        $this->model = $model;
 
         // build the form
         $this->build();
@@ -92,11 +92,8 @@ class Form
     private function getValue($name)
     {
         // check if data is set
-        if (!empty($this->data)) {
-            // check if the property on this data obj is set
-            if (property_exists($this->data, $name)) {
-                return $this->data->{$name};
-            }
+        if (!empty($this->model)) {
+            return $this->model->{$name};
         }
 
         return null;
@@ -146,30 +143,8 @@ class Form
         return $this->method;
     }
 
-    /**
-     * Returns the validation errors.
-     *
-     */
-    public function getErrors()
-    {
-
-    }
-
-    /**
-     * Validate the form values.
-     *
-     * @return bool
-     */
-    public function validate()
-    {
-        return true;
-        // have a formvalidator class validate our form
-        //$validator = FormValidator::make($form, $config);
-        /*if($validator->validates()) {
-            return true;
-        }
-
-        return $validator;*/
+    public function getValidator() {
+        return Validator::make(request()->all(), $this->getRules());
     }
 
     /**
@@ -179,20 +154,23 @@ class Form
      */
     public function getForStorage()
     {
-        /*$data = [];
-        foreach($this->getFields() as $field) {
-            if(request()->get($field->)) {
-                return     request()->get($name);
-            }
-        }
-*/
-        /*  dd($data);*/
-
         // init data handler
-        $dataHandler = new DataHandler($this->config, request()->except(['_token', '_method']));
-
-        dd($dataHandler->getForStorage());
+        $dataHandler = new FormData($this->config, request()->except(['_token', '_method']));
 
         return $dataHandler->getForStorage();
+    }
+
+    public function getRules()
+    {
+        $allRules = [];
+        foreach($this->getFields() as $field)
+        {
+            if($rules = $field->getRules())
+            {
+                $allRules[$field->getName()] = $rules;
+            }
+        }
+
+        return $allRules;
     }
 }

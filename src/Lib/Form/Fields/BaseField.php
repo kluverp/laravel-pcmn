@@ -34,7 +34,7 @@ class BaseField
      */
     protected $type = 'text';
 
-    protected $view = 'input';
+    protected $view = null;
 
     /**
      * BaseField constructor.
@@ -143,9 +143,10 @@ class BaseField
      */
     protected function getView()
     {
-        if($this->view) {
+        if ($this->view) {
             return 'pcmn::content.form.fields.' . snake_case(lcfirst($this->view));
         }
+
         return 'pcmn::content.form.fields.' . snake_case(lcfirst(class_basename(get_class($this))));
     }
 
@@ -186,14 +187,37 @@ class BaseField
      */
     public function getAttributes()
     {
-        return [
-            'class' => 'form-control',
+        $attr = [
+            'class' => $this->getClass(),
             'id' => $this->getId(),
             'name' => $this->getName(),
             'placeholder' => $this->getPlaceholder(),
             'value' => $this->getValue(),
-            'type' => $this->getType()
+            'type' => $this->getType(),
         ];
+
+        if (isset($this->config['attr'])) {
+            $attr = array_merge($this->config['attr'], $attr);
+        }
+
+        return $attr;
+    }
+
+    /**
+     * Returns the classnames for input.
+     *
+     * @return string
+     */
+    public function getClass()
+    {
+        $classes = ['form-control'];
+        if ($errors = session()->get('errors')) {
+            if ($errors->has($this->getName())) {
+                $classes[] = 'is-invalid';
+            }
+        }
+
+        return implode($classes, ' ');
     }
 
     /**
@@ -208,5 +232,10 @@ class BaseField
         }
 
         return false;
+    }
+
+    public function getRules()
+    {
+        return array_get($this->config, 'rules');
     }
 }

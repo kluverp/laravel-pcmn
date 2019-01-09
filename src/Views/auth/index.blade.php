@@ -6,6 +6,8 @@
 
         @include('pcmn::_components.messages')
 
+        <img class="mx-auto d-block" src="{{ url('vendor/pcmn/img/pacman-logo_77x50.png') }}"/>
+
         <form class="form-signin" action="{{ route('pcmn.auth.login') }}" method="post">
 
             {{ csrf_field() }}
@@ -36,16 +38,17 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="remember_me"
-                               value="1"> @lang($transNamespace . 'form.remember_me')
+                        <input type="checkbox" name="remember_me" value="1">
+                        @lang($transNamespace . 'form.remember_me')
                     </label>
                 </div>
             </div>
 
             {{-- submit --}}
             <div class="form-group">
-                <button class="btn btn-lg btn-primary btn-block"
-                        type="submit">@lang($transNamespace . 'form.btn_submit')</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">
+                    @lang($transNamespace . 'form.btn_submit')
+                </button>
             </div>
 
             {{-- password forgotten link --}}

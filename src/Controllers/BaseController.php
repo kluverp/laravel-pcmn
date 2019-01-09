@@ -107,4 +107,9 @@ class BaseController extends Controller
     {
         return $this->transNamespace . $this->namespace . '.' . ltrim($str, '.');
     }
+
+    protected function trans($key)
+    {
+        return __($this->transNamespace($key));
+    }
 }

@@ -8,7 +8,7 @@
 
         <div class="container">
 
-            @include('pcmn::_components.messages')
+            @include('pcmn::_components.alerts')
 
             <div class="row">
                 <div class="col-3">
