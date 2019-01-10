@@ -8,7 +8,7 @@
     {{-- page title --}}
     <h1>
         {{ $title }}
-        <small class="text-muted">edit</small>
+        <small class="text-muted">@lang($transNs . '.edit')</small>
     </h1>
 
     {{-- page description --}}

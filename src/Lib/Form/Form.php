@@ -92,7 +92,7 @@ class Form
     private function getValue($name)
     {
         // check if data is set
-        if (!empty($this->model)) {
+        if (!empty($this->model->{$name})) {
             return $this->model->{$name};
         }
 

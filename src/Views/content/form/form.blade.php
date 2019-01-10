@@ -8,7 +8,7 @@
     <div class="form-group row">
         <div class="col-sm-2"></div>
         <div class="col-sm-10">
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary">@lang('pcmn::content.submit')</button>
         </div>
     </div>
 </form>

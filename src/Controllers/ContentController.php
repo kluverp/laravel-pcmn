@@ -23,6 +23,7 @@ class ContentController extends BaseController
      */
     protected $namespace = 'content';
     private $transNs = 'pcmn::content';
+    private $routeNs = 'pcmn.content';
 
     /**
      * Table configuration object.
@@ -47,7 +48,9 @@ class ContentController extends BaseController
         $this->table = $this->tableConfigRepo->find($this->tableName);
 
         // add index url
-        $this->breadcrumbs->add($this->table->getIndexUrl(), $this->table->getTitle('plural'));
+        if($this->table) {
+            $this->breadcrumbs->add($this->table->getIndexUrl(), $this->table->getTitle('plural'));
+        }
 
         // create new model
         $this->model = new Model($this->tableName);
@@ -75,20 +78,22 @@ class ContentController extends BaseController
      * @param $table
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create($table)
+    public function create($table, Xref $xrefs)
     {
         // create new form
-        $form = new Form($this->config, [
+        $form = new Form($this->table, $this->model, [
             'method' => 'post',
-            'action' => route('pcmn.content.store', $table),
-            'model' => $this->model
+            'action' => route('pcmn.content.store', $table)
         ]);
 
         return view($this->viewNamespace('create'), [
-            'title' => $this->config->getTitle('singular'),
-            'description' => $this->config->getDescription(),
+            'transNs' => $this->transNs,
+            'routeNs' => $this->routeNs,
+            'title' => $this->table->getTitle('singular'),
+            'description' => $this->table->getDescription(),
             'form' => $form,
-            'breadcrumbs' => $this->breadcrumbs
+            'breadcrumbs' => $this->breadcrumbs,
+            'datatables' => $xrefs->datatables($this->table)
         ]);
     }
 
@@ -102,17 +107,15 @@ class ContentController extends BaseController
     public function store($table, Request $request)
     {
         // create form
-        $form = new Form($this->config, [
+        $form = new Form($this->table, null, [
             'request' => $request
         ]);
 
         // validate the form
-        if (!$form->validate()) {
-            return redirect()->back()->withErrors($form->getErrors())->withInput();
-        }
+        $form->getValidator()->validate();
 
         // create a new record
-        $recordId = Model::create($table, $form->getForStorage());
+        $recordId = $this->model->create($form->getForStorage());
 
         // return to the edit screen
         return redirect()
@@ -151,6 +154,7 @@ class ContentController extends BaseController
         $this->breadcrumbs->add('', $this->table->getTitle('singular') . ' (' . request()->route('id') . ')');
 
         return view($this->viewNamespace('edit'), [
+            'transNs' => $this->transNs,
             'title' => $this->table->getTitle('singular'),
             'description' => $this->table->getDescription(),
             'form' => $form,
@@ -205,10 +209,14 @@ class ContentController extends BaseController
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($table, $id)
+    public function destroy($table, $id, Request $request)
     {
         // remove the record
-        Model::delete($table, $id);
+        $this->model->delete($id);
+
+        if($request->ajax()) {
+            return response()->json(['ok']);
+        }
 
         return redirect()
             ->route('pcmn.content.index', [$table])
