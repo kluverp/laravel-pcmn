@@ -150,4 +150,9 @@ class DataTable
             ->orderBy($cols[$this->parameters['order'][0]['column']], $this->parameters['order'][0]['dir'])
             ->get();
     }
+
+    public function title()
+    {
+        return $this->config->getTitle();
+    }
 }

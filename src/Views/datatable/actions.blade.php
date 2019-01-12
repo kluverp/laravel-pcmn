@@ -12,10 +12,10 @@
         </a>
     @endif
     @if($config->canDestroy())
-        <form action="{{ route($routeNs . '.destroy', [$config->getTable(), $rowId]) }}" method="post">
+        <form class="d-inline" action="{{ route($routeNs . '.destroy', [$config->getTable(), $rowId]) }}" method="post">
             <input type="hidden" name="_method" value="delete">
             {{ csrf_field() }}
-            <button class="btn-destroy btn btn-danger btn-sm"
+            <button class="btn btn-danger btn-sm btn-destroy"
                     href="{{ route($routeNs . '.destroy', [$config->getTable(), $rowId]) }}">
                 @lang($transNs . '.actions.destroy')
             </button>

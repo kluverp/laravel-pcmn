@@ -21,9 +21,9 @@ class ContentController extends BaseController
      *
      * @var string
      */
-    protected $namespace = 'content';
-    private $transNs = 'pcmn::content';
-    private $routeNs = 'pcmn.content';
+    protected $transNs = 'pcmn::content';
+    protected $routeNs = 'pcmn.content';
+    protected $viewNs = 'pcmn::content';
 
     /**
      * Table configuration object.
@@ -48,7 +48,7 @@ class ContentController extends BaseController
         $this->table = $this->tableConfigRepo->find($this->tableName);
 
         // add index url
-        if($this->table) {
+        if ($this->table) {
             $this->breadcrumbs->add($this->table->getIndexUrl(), $this->table->getTitle('plural'));
         }
 
@@ -63,7 +63,7 @@ class ContentController extends BaseController
      */
     public function index()
     {
-        return view($this->viewNamespace('index'), [
+        return view($this->viewNs . '.index', [
             'title' => $this->table->getTitle(),
             'description' => $this->table->getDescription(),
             'dataTable' => new DataTable($this->table),
@@ -86,14 +86,13 @@ class ContentController extends BaseController
             'action' => route('pcmn.content.store', $table)
         ]);
 
-        return view($this->viewNamespace('create'), [
+        return view($this->viewNs . '.create', [
             'transNs' => $this->transNs,
             'routeNs' => $this->routeNs,
             'title' => $this->table->getTitle('singular'),
             'description' => $this->table->getDescription(),
             'form' => $form,
             'breadcrumbs' => $this->breadcrumbs,
-            'datatables' => $xrefs->datatables($this->table)
         ]);
     }
 
@@ -147,13 +146,13 @@ class ContentController extends BaseController
         // create form
         $form = new Form($this->table, $model, [
             'method' => 'put',
-            'action' => route('pcmn.content.update', [$table, $id])
+            'action' => route($this->routeNs . '.update', [$table, $id])
         ]);
 
         // add breadcrumb
         $this->breadcrumbs->add('', $this->table->getTitle('singular') . ' (' . request()->route('id') . ')');
 
-        return view($this->viewNamespace('edit'), [
+        return view($this->viewNs . '.edit', [
             'transNs' => $this->transNs,
             'title' => $this->table->getTitle('singular'),
             'description' => $this->table->getDescription(),
@@ -174,32 +173,26 @@ class ContentController extends BaseController
     public function update($table, $id, Request $request)
     {
         // get the model instance
-        if(!$model = $this->model->find($id)) {
+        if (!$model = $this->model->find($id)) {
             return abort();
         }
 
         // create new form instance
         $form = new Form($this->table, $model, [
             'method' => 'put',
-            'action' => route('pcmn.content.update', [$table, $id]),
+            'action' => route($this->routeNs . '.update', [$table, $id]),
             'request' => $request,
         ]);
 
         // validate the form
         $form->getValidator()->validate();
 
-        /*
-        if (true) {
-            return redirect()->back()->withErrors($form->getValidator())->withInput();
-        }
-        */
-
         // update model
         $this->model->update($id, $form->getForStorage());
 
         return redirect()
             ->back()
-            ->with('alert_success', $this->trans('alerts.updated'));
+            ->with('alert_success', __($this->transNs . '.alerts.updated'));
     }
 
     /**
@@ -214,12 +207,12 @@ class ContentController extends BaseController
         // remove the record
         $this->model->delete($id);
 
-        if($request->ajax()) {
+        if ($request->ajax()) {
             return response()->json(['ok']);
         }
 
         return redirect()
-            ->route('pcmn.content.index', [$table])
-            ->with('alert_danger', $this->trans('alerts.destroyed'));
+            ->route($this->routeNs . '.index', [$table])
+            ->with('alert_danger', __($this->transNs . '.alerts.destroyed'));
     }
 }

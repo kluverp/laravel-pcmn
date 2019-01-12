@@ -3,6 +3,7 @@
 namespace Kluverp\Pcmn\Lib;
 
 use Kluverp\Pcmn\Lib\TableConfig\TableConfigRepository;
+use Kluverp\Pcmn\Lib\DataTable\DataTable;
 
 class Xref
 {

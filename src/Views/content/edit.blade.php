@@ -23,21 +23,23 @@
     {{-- the genereated form --}}
     {!! $form->html() !!}
 
-    @foreach($datatables as $datatable)
-        <h2>{{$datatable->title()}}</h2>
-        {!! $datatable->html() !!}
-    @endforeach
-
-@endsection
-
-@section('scripts')
-
-    <script type="text/javascript">
-        $(document).ready(function () {
+    {{-- xref datatables --}}
+    @if(isset($datatables))
+        <div class="xrefs">
             @foreach($datatables as $datatable)
-                {!! $datatable->script() !!}
+                <h2>
+                    {{ $datatable->title() }}
+                    <small class="text-muted">@lang($transNs . '.index')</small>
+                </h2>
+                @if(!empty($description))
+                    <p class="lead">
+                        {{ $description }}
+                    </p>
+                @endif
+                <hr>
+                {!! $datatable->html() !!}
             @endforeach
-        });
-    </script>
+        </div>
+    @endif
 
 @endsection

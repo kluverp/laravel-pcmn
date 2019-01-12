@@ -34,3 +34,11 @@ main.container {
     border-bottom-left-radius: .25rem;
     border-bottom-right-radius: .25rem;
 }
+
+.btn-destroy {
+    cursor: pointer;
+}
+
+.xrefs {
+    margin-top: 50px;
+}

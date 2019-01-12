@@ -28,6 +28,18 @@ class Model
         return $this->table = $table;
     }
 
+    public function datatable()
+    {
+        if(is_numeric($parentId) && is_string($parentTable)) {
+            $ids = DB::table('pcmn_xrefs')
+                ->where('parent_table', $parentTable)
+                ->where('parent_id', $parentId)
+                ->where('child_table', $this->getTable())
+                ->pluck('child_id');
+        }
+        return DB::table($this->getTable())->find($id);
+    }
+
     /**
      * Get a record.
      *

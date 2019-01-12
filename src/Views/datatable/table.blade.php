@@ -1,4 +1,4 @@
-<table id="table" class="table" data-table="{{ $config->getTable() }}">
+<table class="table datatable" data-table="{{ $config->getTable() }}" data-columns='{!!json_encode($data)!!}' data-url="{{ route($routeNs . ".index", $config->getTable()) }}">
     <thead>
     <tr>
     @foreach($thead as $th)
@@ -19,61 +19,3 @@
 
     </tbody>
 </table>
-
-@section('scripts')
-    @parent
-
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-
-            $("#table").DataTable({
-                "processing": true,
-                "serverSide": true,
-                "paging": true,
-                "ajax": "{{ route($routeNs . ".index", $config->getTable()) }}",
-                "language": {
-                    "url": "{{ config('pcmn.datatable.languageUrl') }}"
-                },
-                // "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                // "pageLength": 50,
-                "columns": {!! json_encode($data) !!}
-            });
-
-            /*$('#table').on('click', 'tbody tr', function() {
-                console.log('API row values : ', table.row(this).data());
-            })*/
-
-            $('#table').on('click', '.btn-destroy', function(e){
-                e.preventDefault();
-                let row = $(this).closest('tr');
-                Swal({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.value) {
-
-                    var request = $.ajax({
-                        url: $(this).closest('form').attr('action'),
-                        method: "POST",
-                        data: $(this).closest('form').serialize(),
-                        dataType: "json"
-                    }).done(function(msg){
-                        row.fadeOut();
-                    });
-
-                    //$(this).closest('form').submit();
-                }
-            });
-            });
-
-        });
-
-    </script>
-
-@endsection

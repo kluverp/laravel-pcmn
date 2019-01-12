@@ -161,7 +161,8 @@ class BaseField
             'id' => $this->getId(),
             'label' => $this->getLabel(),
             'attr' => $this->getAttributeStr(),
-            'helpText' => $this->getHelpText()
+            'helpText' => $this->getHelpText(),
+            'name' => $this->getName()
         ];
     }
 
