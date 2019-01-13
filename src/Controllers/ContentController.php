@@ -170,7 +170,7 @@ class ContentController extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update($table, $id, Request $request)
+    public function update($table, $id, $parentTable = null, $parentId = null, Request $request)
     {
         // get the model instance
         if (!$model = $this->model->find($id)) {
@@ -188,7 +188,7 @@ class ContentController extends BaseController
         $form->getValidator()->validate();
 
         // update model
-        $this->model->update($id, $form->getForStorage());
+        $this->model->update($id, $form->getForStorage(), $parentTable, $parentId);
 
         return redirect()
             ->back()

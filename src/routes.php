@@ -41,7 +41,7 @@ Route::group([
     Route::get('content/{table}/create/{parent_id?}/{parent_table?}', 'ContentController@create')->name('content.create');
     Route::post('content/{table}/{parent_id?}/{parent_table?}', 'ContentController@store')->name('content.store');
     Route::get('content/{table}/{id}', 'ContentController@show')->name('content.show');
-    Route::get('content/{table}/{id}/edit', 'ContentController@edit')->name('content.edit');
+    Route::get('content/{table}/{id}/edit/{parent_id?}/{parent_table?}', 'ContentController@edit')->name('content.edit');
     Route::put('content/{table}/{id}/edit', 'ContentController@update')->name('content.update');
     Route::delete('content/{table}/{id}/destroy', 'ContentController@destroy')->name('content.destroy');
 
