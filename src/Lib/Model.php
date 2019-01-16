@@ -12,14 +12,20 @@ use Illuminate\Database\Query\Builder;
  */
 class Model
 {
-    private $table = null;
-    private $id = null;
-    private $prefix = null;
+    private $__table = null;
+    private $__prefix = null;
+    private $__data = [];
 
-    public function __construct($table)
+    /**
+     * Model constructor.
+     * @param $table
+     */
+    public function __construct($table, $data = [])
     {
+        //$this->setData(new \stdClass());
         $this->setTable($table);
         $this->setPrefix(config('pcmn.config.table_prefix'));
+        $this->setData($data);
 
         Builder::macro('softdelete', function () {
             $values = [
@@ -32,28 +38,40 @@ class Model
 
     public function getTable()
     {
-        return $this->table;
+        return $this->__table;
     }
 
     public function setTable($table)
     {
-        return $this->table = $table;
+        return $this->__table = $table;
     }
 
     private function getPrefix()
     {
-        return $this->prefix;
+        return $this->__prefix;
     }
 
     public function setPrefix($prefix)
     {
-        return $this->prefix = $prefix;
+        return $this->__prefix = $prefix;
     }
 
-    public function datatable()
+    public function setData($data)
     {
+        return $this->__data = $data;
+    }
 
-        return DB::table($this->getTable())->find($id);
+    public function getData()
+    {
+        if (!$this->__data) {
+            return new \stdClass();
+        }
+        return $this->__data;
+    }
+
+    private function mergeData(array $data)
+    {
+        return $this->setData(array_merge((array)$this->getData(), $data));
     }
 
     /**
@@ -68,7 +86,8 @@ class Model
         if ($record = DB::table($this->getTable())->find($id)) {
             $this->id = $id;
         }
-        return $record;
+
+        return new self($this->getTable(), $record);
     }
 
     /**
@@ -78,17 +97,19 @@ class Model
      * @param $data
      * @return mixed
      */
-    public function create($data, $parentTable = null, $parentId = null)
+    public function create(array $data, $parentTable = null, $parentId = null)
     {
         // insert new record
-        DB::table($this->getTable())->insert($data);
-
-        // get last insert ID
-        if ($id = DB::getPdo()->lastInsertId()) {
-            $this->createXref($parentTable, $parentId, $id);
+        if (DB::table($this->getTable())->insert($data)) {
+            if ($id = DB::getPdo()->lastInsertId()) {
+                $data['id'] = $id;
+                $this->createXref($parentTable, $parentId, $id);
+                $this->mergeData($data);
+                return $id;
+            }
         }
 
-        return $id;
+        return false;
     }
 
 
@@ -99,12 +120,14 @@ class Model
      * @param $id
      * @param $data
      */
-    public function update($id, array $data = [], $parentTable = null, $parentId = null)
+    public function update(array $data = [], $parentTable = null, $parentId = null)
     {
-        dd($parentId);
-        return DB::table($this->getTable())
-            ->where('id', $id)
+        $update = DB::table($this->getTable())
+            ->where('id', $this->getId())
             ->update($data);
+        if ($update) {
+            $this->mergeData($data);
+        }
     }
 
     /**
@@ -139,6 +162,13 @@ class Model
         return false;
     }
 
+    /**
+     * Returns the ID for the first record. In case this does not start at one.
+     * Is used for 'single' record tables.
+     *
+     * @param $table
+     * @return bool
+     */
     public static function firstId($table)
     {
         if (Schema::hasTable($table)) {
@@ -147,6 +177,27 @@ class Model
             }
         }
 
+        return false;
+    }
+
+    /**
+     * Returns a parent record.
+     *
+     * @param $table
+     * @return mixed
+     */
+    public function parent()
+    {
+        $xref = DB::table($this->getPrefix() . 'xref')
+            ->where('child_table', $this->getTable())
+            ->where('child_id', $this->getId())
+            ->first();
+
+
+        if ($xref) {
+            $parent = new self($xref->parent_table);
+            return $parent->find($xref->parent_id);
+        }
         return false;
     }
 
@@ -162,7 +213,7 @@ class Model
         $ids = [];
 
         if (is_numeric($parentId) && is_string($childTable)) {
-            $ids = DB::table( $this->getPrefix() . 'xref')
+            $ids = DB::table($this->getPrefix() . 'xref')
                 ->where('parent_table', $this->getTable())
                 ->where('parent_id', $parentId)
                 ->where('child_table', $childTable)
@@ -183,7 +234,7 @@ class Model
     private function createXref($parentTable, $parentId, $id)
     {
         if (is_numeric($parentId) && is_string($childTable)) {
-            return DB::table($this->getPrefix() . 'xrefs')->create([
+            return DB::table($this->getPrefix() . 'xref')->create([
                 'parent_table' => $parentTable,
                 'parent_id' => $parentId,
                 'child_table' => $this->getTable(),
@@ -191,4 +242,21 @@ class Model
             ]);
         }
     }
+
+    /**
+     * Returns data from model.
+     *
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->getData()->$name;
+    }
+
+    public function getId()
+    {
+        return $this->getData()->id;
+    }
+
 }

@@ -37,6 +37,8 @@ class DataTable
 
         // set datatable ajax parameters
         $this->parameters = $parameters;
+
+        //$this->data = new DatatableStore();
     }
 
     /**
