@@ -4,6 +4,7 @@ namespace Kluverp\Pcmn\Lib;
 
 use Kluverp\Pcmn\Lib\TableConfig\TableConfigRepository;
 use Kluverp\Pcmn\Lib\DataTable\DataTable;
+use Kluverp\Pcmn\Lib\Model;
 
 class Xref
 {
@@ -20,7 +21,7 @@ class Xref
      * @param $config
      * @return array
      */
-    public function datatables($config)
+    public function datatables($config, Model $model = null)
     {
         $datatables = [];
 
@@ -30,7 +31,7 @@ class Xref
 
         foreach ($xrefs as $xref) {
             if ($config = $this->configRepo->find($xref)) {
-                $datatables[] = new DataTable($config);
+                $datatables[] = new DataTable($config, [], $model);
             }
         }
 

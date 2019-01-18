@@ -60,8 +60,18 @@ class Breadcrumb
      * @param $value
      * @return mixed
      */
-    public function add($key, $value)
+    public function add($url, $label)
     {
-        return $this->crumbs[$key] = $value;
+        return $this->crumbs[$url] = $label;
     }
+
+    public function adda(array $crumbs)
+    {
+        foreach($crumbs as $url => $label)
+        {
+            $this->add($url, $label);
+        }
+    }
+
+
 }

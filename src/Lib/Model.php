@@ -202,6 +202,38 @@ class Model
     }
 
     /**
+     * Returns all child ID's.
+     *
+     * @return mixed
+     */
+    public function childIds($table)
+    {
+        return DB::table($this->getPrefix() . 'xref')
+            ->where('parent_table', $this->getTable())
+            ->where('parent_id', $this->getId())
+            ->where('child_table', $table)
+            ->pluck('id');
+    }
+
+    /**
+     * Returns all children.
+     *
+     * @param $table
+     * @return array
+     */
+    public function children($table)
+    {
+        $result = [];
+        $model = new self($table);
+
+        foreach ($this->childIds($table) as $id) {
+            $result[] = $model->find($id);
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns all xref records for given table and parent ID.
      *
      * @param $childTable

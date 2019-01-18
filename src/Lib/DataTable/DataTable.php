@@ -3,6 +3,7 @@
 namespace Kluverp\Pcmn\Lib\DataTable;
 
 use DB;
+use Kluverp\Pcmn\Lib\Model;
 
 class DataTable
 {
@@ -24,19 +25,23 @@ class DataTable
     private $routeNs = 'pcmn.datatable';
     private $viewNs = 'pcmn::datatable';
 
+    private $model = null;
+
     /**
      * DataTable constructor.
      *
      * @param $config
      * @param array $parameters
      */
-    public function __construct($config, $parameters = [])
+    public function __construct($config, $parameters = [], Model $model = null)
     {
         // set properties
         $this->config = $config;
 
         // set datatable ajax parameters
         $this->parameters = $parameters;
+
+        $this->model = $model;
 
         //$this->data = new DatatableStore();
     }
@@ -53,6 +58,7 @@ class DataTable
             'config' => $this->config,
             'transNs' => $this->transNs,
             'routeNs' => $this->routeNs,
+            'model' => $this->model,
             'data' => $this->data()
         ])->render();
     }
@@ -71,7 +77,7 @@ class DataTable
             if ($field = $this->config->getField($index, 'label')) {
                 $columns[$index] = $field;
             } else {
-                $columns[] = '&lt;'. $index .'&gt;';
+                $columns[] = '&lt;' . $index . '&gt;';
             }
         }
 
@@ -144,11 +150,22 @@ class DataTable
     {
         $cols = ['id'];
         $cols = array_merge($cols, array_keys($this->config->getIndex()));
+        $ids = [];
 
-        return DB::table($this->config->getTable())
+
+        $query = DB::table($this->config->getTable())
             ->select($cols)
             ->skip($this->parameters['start'])
-            ->take($this->parameters['length'])
+            ->take($this->parameters['length']);
+
+        if ($model = $this->model) {
+            if($ids = $model->childIds($this->config->getTable())) {
+                $query->whereIn('id', $ids);
+            }
+
+        }
+
+        return $query
             ->orderBy($cols[$this->parameters['order'][0]['column']], $this->parameters['order'][0]['dir'])
             ->get();
     }

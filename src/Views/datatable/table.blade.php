@@ -1,4 +1,4 @@
-<table class="table datatable" data-table="{{ $config->getTable() }}" data-columns='{!!json_encode($data)!!}' data-url="{{ route($routeNs . ".index", $config->getTable()) }}">
+<table class="table datatable" data-table="{{ $config->getTable() }}" data-columns='{!!json_encode($data)!!}' data-url="{{ route($routeNs . ".index", $config->getTable()) }}" @if(isset($model))data-parent-table="{{ $model->getTable() }}" data-parent-id="{{ $model->getId() }}" @endif>
     <thead>
     <tr>
     @foreach($thead as $th)

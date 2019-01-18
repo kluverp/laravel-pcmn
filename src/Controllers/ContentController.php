@@ -33,6 +33,11 @@ class ContentController extends BaseController
     protected $table = null;
     protected $tableName = null;
 
+    /**
+     * Model instance.
+     *
+     * @var Model|null
+     */
     protected $model = null;
 
     /**
@@ -46,11 +51,6 @@ class ContentController extends BaseController
 
         // create new TableConfig object
         $this->table = $this->tableConfigRepo->find($this->tableName);
-
-        // add index url
-        if ($this->table) {
-            $this->breadcrumbs->add($this->table->getIndexUrl(), $this->table->getTitle('plural'));
-        }
 
         // create new model
         $this->model = new Model($this->tableName);
@@ -143,27 +143,14 @@ class ContentController extends BaseController
         // show 404 page, in case model is not found
         $model = $this->model->find($id);
 
-         // create form
+        // create form
         $form = new Form($this->table, $model, [
             'method' => 'put',
             'action' => route($this->routeNs . '.update', [$table, $id])
         ]);
 
-        $i = 0;
-
-        $parent = $model->parent();
-while($parent) {
-$i++;
-    $this->breadcrumbs->add('foo'. $i, 'barrrrr'. $i);
-    $parent = $parent->parent();
-}
-
-
-
-        // add breadcrumb
-        $this->breadcrumbs->add('', $this->table->getTitle('singular') . ' (' . request()->route('id') . ')');
-
-
+        // create breadcrumbs
+        $this->breadcrumbs($model);
 
         return view($this->viewNs . '.edit', [
             'transNs' => $this->transNs,
@@ -171,7 +158,7 @@ $i++;
             'description' => $this->table->getDescription(),
             'form' => $form,
             'breadcrumbs' => $this->breadcrumbs,
-            'datatables' => $xrefs->datatables($this->table)
+            'datatables' => $xrefs->datatables($this->table, $model)
         ]);
     }
 

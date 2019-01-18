@@ -4,14 +4,22 @@ $(document).ready(function () {
      * Init all datatables.
      */
     $('table.datatable').each(function() {
-        $(this).DataTable({
+        let table = $(this);
+        let url = table.data('url');
+
+        if(table.data('parent-table') && table.data('parent-id')) {
+            url = url + '/' + table.data('parent-table');
+            url = url + '/' + table.data('parent-id');
+        }
+
+        table.DataTable({
             "processing": true,
             "serverSide": true,
             "paging": true,
-            "ajax": $(this).data('url'),
+            "ajax": url,
             // "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
             // "pageLength": 50,
-            "columns": $(this).data('columns')
+            "columns": table.data('columns')
         });
     });
 
