@@ -21,10 +21,20 @@ class DataTable
      */
     private $parameters = [];
 
+    /**
+     * Datatable namespaces.
+     *
+     * @var string
+     */
     private $transNs = 'pcmn::datatable';
     private $routeNs = 'pcmn.datatable';
     private $viewNs = 'pcmn::datatable';
 
+    /**
+     * Parent record model.
+     *
+     * @var Model|null
+     */
     private $model = null;
 
     /**
