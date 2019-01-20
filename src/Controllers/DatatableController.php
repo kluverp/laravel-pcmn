@@ -22,13 +22,18 @@ class DatatableController extends BaseController
      */
     public function index($table, $parentTable = null, $parentId = null, Request $request)
     {
+        $model = null;
+
         // create new TableConfig object
         if (!$config = new TableConfig($table, config('pcmn.tables.' . $table))) {
             return abort('Missing table configuration', 422);
         }
 
-        $model = new Model($parentTable);
-        $model = $model->find($parentId);
+        // if a parent record is given, load it
+        if ($parentTable && $parentId) {
+            $model = new Model($parentTable);
+            $model = $model->find($parentId);
+        }
 
         // init new DataTable processor
         $dataTable = new DataTable($config, $request->all(), $model);

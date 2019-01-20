@@ -152,17 +152,16 @@ class DataTable
         $cols = array_merge($cols, array_keys($this->config->getIndex()));
         $ids = [];
 
-
         $query = DB::table($this->config->getTable())
             ->select($cols)
             ->skip($this->parameters['start'])
             ->take($this->parameters['length']);
 
+        // if this is a child record, find the id's to load
         if ($model = $this->model) {
-            if($ids = $model->childIds($this->config->getTable())) {
+            if ($ids = $model->childIds($this->config->getTable())) {
                 $query->whereIn('id', $ids);
             }
-
         }
 
         return $query
