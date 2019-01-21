@@ -51,9 +51,8 @@ class DataTable
         // set datatable ajax parameters
         $this->parameters = $parameters;
 
+        // set model
         $this->model = $model;
-
-        //$this->data = new DatatableStore();
     }
 
     /**
@@ -131,7 +130,7 @@ class DataTable
             $collection = $this->query();
         } catch (\Exception $e) {
             return [
-                'draw' => (int)$this->parameters['draw'],
+                'draw' => (int)$this->parameter('draw'),
                 'error' => $error = $e->getMessage()
             ];
         }
@@ -142,7 +141,7 @@ class DataTable
 
         // form data array
         $data = [
-            'draw' => (int)$this->parameters['draw'],
+            'draw' => (int)$this->parameter('draw'),
             'recordsTotal' => $collection->count(),
             'recordsFiltered' => $collection->count(),
             'data' => $collection->toArray(),
@@ -158,29 +157,102 @@ class DataTable
      */
     private function query()
     {
-        $cols = ['id'];
-        $cols = array_merge($cols, array_keys($this->config->getIndex()));
-        $ids = [];
+        $cols = $this->query_cols();
 
         $query = DB::table($this->config->getTable())
             ->select($cols)
-            ->skip($this->parameters['start'])
-            ->take($this->parameters['length']);
+            ->skip($this->parameter('start'))
+            ->take($this->parameter('length'));
 
-        // if this is a child record, find the id's to load
-        if ($model = $this->model) {
-            if ($ids = $model->childIds($this->config->getTable())) {
-                $query->whereIn('id', $ids);
-            }
-        }
+        // handle search
+        $this->query_search($query, $cols);
 
-        return $query
-            ->orderBy($cols[$this->parameters['order'][0]['column']], $this->parameters['order'][0]['dir'])
-            ->get();
+        // only load the children if parent given
+        $this->query_xref($query);
+
+        // order clause
+        $this->query_order($query, $cols);
+
+        return $query->get();
     }
 
+    /**
+     * Returns the datatable title.
+     *
+     * @return mixed
+     */
     public function title()
     {
         return $this->config->getTitle();
+    }
+
+    /**
+     * Returns a datatable parameter.
+     *
+     * @param $key
+     * @param null $default
+     * @return mixed
+     */
+    private function parameter($key, $default = null)
+    {
+        return array_get($this->parameters, $key, $default);
+    }
+
+    /**
+     * Handle the search query.
+     *
+     * @param $query
+     * @param $cols
+     */
+    private function query_search($query, $cols)
+    {
+        if ($str = $this->parameter('search.value')) {
+            $query->where(function ($query) use ($cols, $str) {
+                foreach ($cols as $col) {
+                    $query->orWhere($col, 'like', '%' . $str . '%');
+                }
+            });
+        }
+    }
+
+    /**
+     * Returns the columns to retrieve.
+     *
+     * @return array
+     */
+    private function query_cols()
+    {
+        // always include 'id' column, we need it for the rows
+        $cols = ['id'];
+
+        return $cols = array_merge($cols, array_keys($this->config->getIndex()));
+    }
+
+    /**
+     * Returns the ID's to get if the record has a parent model.
+     *
+     * @param $query
+     * @return mixed
+     */
+    private function query_xref($query)
+    {
+        // if this is a child record, find the id's to load
+        if ($model = $this->model) {
+            if ($ids = $model->childIds($this->config->getTable())) {
+                return $query->whereIn('id', $ids);
+            }
+        }
+    }
+
+    /**
+     * The ordering.
+     *
+     * @param $query
+     * @param $cols
+     * @return mixed
+     */
+    private function query_order($query, $cols)
+    {
+        return $query->orderBy($cols[$this->parameter('order.0.column')], $this->parameter('order.0.dir'));
     }
 }

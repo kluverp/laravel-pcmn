@@ -122,6 +122,7 @@ class Model
      */
     public function update(array $data = [], $parentTable = null, $parentId = null)
     {
+        unset($data['id']);
         $update = DB::table($this->getTable())
             ->where('id', $this->getId())
             ->update($data);
@@ -265,8 +266,8 @@ class Model
      */
     private function createXref($parentTable, $parentId, $id)
     {
-        if (is_numeric($parentId) && is_string($childTable)) {
-            return DB::table($this->getPrefix() . 'xref')->create([
+        if (is_numeric($parentId) && is_string($parentTable)) {
+            return DB::table($this->getPrefix() . 'xref')->insert([
                 'parent_table' => $parentTable,
                 'parent_id' => $parentId,
                 'child_table' => $this->getTable(),

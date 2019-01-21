@@ -78,12 +78,12 @@ class ContentController extends BaseController
      * @param $table
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create($table, Xref $xrefs)
+    public function create($table, $parentId = null, $parentTable = null, Xref $xrefs)
     {
         // create new form
         $form = new Form($this->table, $this->model, [
             'method' => 'post',
-            'action' => route('pcmn.content.store', $table)
+            'action' => route('pcmn.content.store', [$table, $parentId, $parentTable])
         ]);
 
         return view($this->viewNs . '.create', [
@@ -103,7 +103,7 @@ class ContentController extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store($table, Request $request)
+    public function store($table, $parentId = null, $parentTable = null, Request $request)
     {
         // create form
         $form = new Form($this->table, null, [
@@ -114,7 +114,7 @@ class ContentController extends BaseController
         $form->getValidator()->validate();
 
         // create a new record
-        $recordId = $this->model->create($form->getForStorage());
+        $recordId = $this->model->create($form->getForStorage(), $parentTable, $parentId);
 
         // return to the edit screen
         return redirect()
@@ -188,7 +188,7 @@ class ContentController extends BaseController
         $form->getValidator()->validate();
 
         // update model
-        $this->model->update($id, $form->getForStorage(), $parentTable, $parentId);
+        $model->update($form->getForStorage(), $parentTable, $parentId);
 
         return redirect()
             ->back()
