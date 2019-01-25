@@ -89,6 +89,7 @@ class ContentController extends BaseController
         return view($this->viewNs . '.create', [
             'transNs' => $this->transNs,
             'routeNs' => $this->routeNs,
+            'config' => $this->table,
             'title' => $this->table->getTitle('singular'),
             'description' => $this->table->getDescription(),
             'form' => $form,
@@ -154,6 +155,9 @@ class ContentController extends BaseController
 
         return view($this->viewNs . '.edit', [
             'transNs' => $this->transNs,
+            'routeNs' => $this->routeNs,
+            'config' => $this->table,
+            'model' => $this->model,
             'title' => $this->table->getTitle('singular'),
             'description' => $this->table->getDescription(),
             'form' => $form,

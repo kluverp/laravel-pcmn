@@ -9,6 +9,17 @@
     <h1>
         {{ $title }}
         <small class="text-muted">@lang($transNs . '.edit')</small>
+        @if(!empty($model))
+            <form class="mt-5 float-right"
+                  action="{{ route($routeNs . '.destroy', [$config->getTable(), $model->id]) }}" method="post">
+                {{ csrf_field() }}
+                {{ method_field('delete') }}
+                <button class="btn btn-danger btn-sm btn-destroy" type="button"
+                        data-redirect="{{ route($routeNs . '.index', $config->getTable()) }}">
+                    @lang($transNs . '.destroy')
+                </button>
+            </form>
+        @endif
     </h1>
 
     {{-- page description --}}

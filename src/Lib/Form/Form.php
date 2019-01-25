@@ -92,8 +92,10 @@ class Form
     private function getValue($name)
     {
         // check if data is set
-        if (!empty($this->model->{$name})) {
-            return $this->model->{$name};
+        if(is_object($this->model)) {
+            if ($this->model->{$name} !== null) {
+                return $this->model->{$name};
+            }
         }
 
         return null;

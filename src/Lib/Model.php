@@ -15,6 +15,7 @@ class Model
     private $__table = null;
     private $__prefix = null;
     private $__data = [];
+    private $__cols = [];
 
     /**
      * Model constructor.
@@ -22,45 +23,102 @@ class Model
      */
     public function __construct($table, $data = [])
     {
-        //$this->setData(new \stdClass());
         $this->setTable($table);
         $this->setPrefix(config('pcmn.config.table_prefix'));
         $this->setData($data);
-
-        Builder::macro('softdelete', function () {
-            $values = [
-                "deleted_at" => \Carbon\Carbon::now()
-            ];
-
-            return Builder::update($values);
-        });
+        $this->setCols(Schema::getColumnListing($table));
     }
 
+    /**
+     * Returns database table.
+     *
+     * @return null
+     */
     public function getTable()
     {
         return $this->__table;
     }
 
+    /**
+     * Set database table.
+     *
+     * @param $table
+     * @return mixed
+     */
     public function setTable($table)
     {
         return $this->__table = $table;
     }
 
+    /**
+     * Set record columns.
+     *
+     * @param $cols
+     * @return mixed
+     */
+    private function setCols($cols)
+    {
+        return $this->__cols = $cols;
+    }
+
+    /**
+     * Returns all table columns.
+     *
+     * @return array
+     */
+    public function getCols()
+    {
+        return $this->__cols;
+    }
+
+    /**
+     * Check if given column exists.
+     *
+     * @param $col
+     * @return bool
+     */
+    public function hasCol($col)
+    {
+        return in_array($col, $this->getCols());
+    }
+
+    /**
+     * Returns the table prefix.
+     *
+     * @return null
+     */
     private function getPrefix()
     {
         return $this->__prefix;
     }
 
+    /**
+     * Set table prefix.
+     *
+     * @param $prefix
+     * @return mixed
+     */
     public function setPrefix($prefix)
     {
         return $this->__prefix = $prefix;
     }
 
+    /**
+     * Set model data.
+     *
+     * @param $data
+     * @return mixed
+     */
     public function setData($data)
     {
         return $this->__data = $data;
     }
 
+    /**
+     * Returns model data.
+     *
+     * @return array|\stdClass
+     */
     public function getData()
     {
         if (!$this->__data) {
@@ -69,6 +127,12 @@ class Model
         return $this->__data;
     }
 
+    /**
+     * Merge new data with current model object after 'create' or 'update'.
+     *
+     * @param array $data
+     * @return mixed
+     */
     private function mergeData(array $data)
     {
         return $this->setData(array_merge((array)$this->getData(), $data));
@@ -99,6 +163,13 @@ class Model
      */
     public function create(array $data, $parentTable = null, $parentId = null)
     {
+        if ($this->hasCol('updated_at')) {
+            $data['updated_at'] = date('Y-m-d H:i:s');
+        }
+        if ($this->hasCol('created_at')) {
+            $data['created_at'] = date('Y-m-d H:i:s');
+        }
+
         // insert new record
         if (DB::table($this->getTable())->insert($data)) {
             if ($id = DB::getPdo()->lastInsertId()) {
@@ -123,6 +194,11 @@ class Model
     public function update(array $data = [], $parentTable = null, $parentId = null)
     {
         unset($data['id']);
+
+        if ($this->hasCol('updated_at')) {
+            $data['updated_at'] = date('Y-m-d H:i:s');
+        }
+
         $update = DB::table($this->getTable())
             ->where('id', $this->getId())
             ->update($data);
@@ -132,20 +208,20 @@ class Model
     }
 
     /**
-     * Delete record.
+     * Deletes the record.
+     * Checks if 'deleted_at' column is present, if so
+     * we perform a softdelete, otherwise full delete.
      */
     public function delete($id)
     {
-        return DB::table($this->getTable())
-            ->where('id', $id)
-            ->delete();
-    }
+        $query = DB::table($this->getTable())
+            ->where('id', $id);
 
-    public function softdelete($id)
-    {
-        return DB::table($this->getTable())
-            ->where('id', $id)
-            ->softdelete();
+        if ($this->hasCol('deleted_at')) {
+            return $query->softdelete();
+        }
+
+        return $query->delete();
     }
 
     /**
@@ -284,7 +360,10 @@ class Model
      */
     public function __get($name)
     {
-        return $this->getData()->$name;
+        $data = $this->getData();
+        if(property_exists($data, $name)) {
+            return $data->{$name};
+        }
     }
 
     public function getId()
