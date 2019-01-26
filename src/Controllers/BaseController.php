@@ -127,7 +127,8 @@ class BaseController extends Controller
         // get current model config
         $config = $this->tableConfigRepo->find($model->getTable());
 
-        $crumbs[''] = $config->getTitle('singular') . ' (' . $model->getId() . ')';
+        // rende last crumb
+        $crumbs[''] = $config->getTitle('singular') . ($model->getId() > 0 ? ' (' . $model->getId() . ')' : '');
 
         $parent = $model->parent();
         while ($parent) {
