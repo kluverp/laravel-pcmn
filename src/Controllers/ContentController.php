@@ -86,6 +86,9 @@ class ContentController extends BaseController
             'action' => route('pcmn.content.store', [$table, $parentId, $parentTable])
         ]);
 
+        // create breadcrumbs
+        $this->breadcrumbs($this->model);
+
         return view($this->viewNs . '.create', [
             'transNs' => $this->transNs,
             'routeNs' => $this->routeNs,
