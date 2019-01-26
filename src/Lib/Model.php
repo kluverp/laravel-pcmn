@@ -218,7 +218,7 @@ class Model
             ->where('id', $id);
 
         if ($this->hasCol('deleted_at')) {
-            return $query->softdelete();
+            $query->update(['deleted_at' => date('Y-m-d H:i:s')]);
         }
 
         return $query->delete();
@@ -270,7 +270,6 @@ class Model
             ->where('child_id', $this->getId())
             ->first();
 
-
         if ($xref) {
             $parent = new self($xref->parent_table);
             return $parent->find($xref->parent_id);
@@ -289,7 +288,7 @@ class Model
             ->where('parent_table', $this->getTable())
             ->where('parent_id', $this->getId())
             ->where('child_table', $table)
-            ->pluck('id');
+            ->pluck('child_id');
     }
 
     /**
@@ -364,11 +363,17 @@ class Model
         if(property_exists($data, $name)) {
             return $data->{$name};
         }
+
+        return null;
     }
 
+    /**
+     * Returns the model ID.
+     *
+     * @return mixed
+     */
     public function getId()
     {
-        return $this->getData()->id;
+        return $this->id;
     }
-
 }
