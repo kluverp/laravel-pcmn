@@ -8,7 +8,13 @@
     {{-- page title --}}
     <h1>
         {{ $title }}
-        <small class="text-muted">@lang($transNs . '.edit')</small>
+        <small class="text-muted">
+            @if(!empty($model->id))
+                @lang($transNs . '.edit')
+            @else
+                @lang($transNs . '.create')
+            @endif
+        </small>
         @if(!empty($model))
             <form class="mt-5 float-right"
                   action="{{ route($routeNs . '.destroy', [$config->getTable(), $model->id]) }}" method="post">
