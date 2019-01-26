@@ -213,6 +213,8 @@ class DataTable
                 }
             });
         }
+
+        return $query;
     }
 
     /**
@@ -239,9 +241,11 @@ class DataTable
         // if this is a child record, find the id's to load
         if ($model = $this->model) {
             if ($ids = $model->childIds($this->config->getTable())) {
-                return $query->whereIn('id', $ids);
+                $query->whereIn('id', $ids);
             }
         }
+
+        return $query;
     }
 
     /**
