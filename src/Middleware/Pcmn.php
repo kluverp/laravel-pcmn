@@ -30,6 +30,9 @@ class Pcmn
             }
         }
 
+        // set user language
+        App::setLocale('nl');
+
         // in all other cases, we redirect the user back to login
         return redirect()->route('pcmn.auth.login');
     }

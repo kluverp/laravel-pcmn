@@ -87,7 +87,7 @@ class BaseField
     public function getLabel()
     {
         if (isset($this->config['label'])) {
-            return $this->config['label'];
+            return __($this->config['label']);
         }
         return '&lt;missing label&gt;';
     }

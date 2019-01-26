@@ -16,6 +16,7 @@ class CreateTables extends Migration
         Schema::create($this->getTableName('user'), function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('active')->default(0);
+            $table->string('lang')->default('en')->nullable();
             $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->string('password');
@@ -28,6 +29,7 @@ class CreateTables extends Migration
         // add admin user
         DB::table($this->getTableName('user'))->insert([
             'active' => true,
+            'lang' => 'en',
             'name' => 'Admin',
             'email' => 'admin@example.com',
             'password' => Hash::make('@admin')

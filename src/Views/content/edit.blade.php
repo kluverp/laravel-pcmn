@@ -7,7 +7,7 @@
 
     {{-- page title --}}
     <h1>
-        {{ $title }}
+        @lang($title)
         <small class="text-muted">
             @if(!empty($model->id))
                 @lang($transNs . '.edit')
@@ -31,7 +31,7 @@
     {{-- page description --}}
     @if(!empty($description))
         <p class="lead">
-            {{ $description }}
+            @lang($description)
         </p>
     @endif
 
