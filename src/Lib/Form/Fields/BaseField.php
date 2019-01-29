@@ -92,6 +92,11 @@ class BaseField
         return '&lt;missing label&gt;';
     }
 
+    public function config($key)
+    {
+        return array_get($this->config, $key);
+    }
+
     /**
      * Returns the placeholder.
      *
@@ -162,7 +167,9 @@ class BaseField
             'label' => $this->getLabel(),
             'attr' => $this->getAttributeStr(),
             'helpText' => $this->getHelpText(),
-            'name' => $this->getName()
+            'name' => $this->getName(),
+            'prepend' => $this->config('prepend'),
+            'append' => $this->config('append')
         ];
     }
 

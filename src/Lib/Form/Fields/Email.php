@@ -10,4 +10,5 @@ class Email extends Input
      * @var string
      */
     protected $type = 'email';
+    protected $view = 'input';
 }
