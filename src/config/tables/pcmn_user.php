@@ -1,27 +1,11 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Main CMS Configuration
-|--------------------------------------------------------------------------
-|
-| This is the form configuration file
-| This file defines the tables config in
-| the following way:
-|
-| <fieldname>[type]			Field type (input|text|radio|select|checkbox|editor|file|image|slug)
-| <fieldname>[label]		Label next to field
-| <fieldname>[placeholder]	Optional placeholder
-| <fieldname>[list]			Show the column in list yes/no
-|
-*/
-
 return [
     'title' => [
-        'plural'   => 'Users',
-        'singular' => 'User'
+        'plural'   => 'pcmn::users.title.plural',
+        'singular' => 'pcmn::users.title.singular'
     ],
-    'description' => 'Manage the users that have access to the system.',
+    'description' => 'pcmn::users.description',
     'permissions' => [
         'create' => true,
         'read'   => true,
@@ -36,18 +20,33 @@ return [
         'status' => [
             'type'        => 'radio',
             'label'       => 'Status',
-            'options'     => "Ja,1,ffffff|Nee,0,ff00ee" // if left out, source comes from DB table
+            'options'     => [] // if left out, source comes from DB table
+        ],
+        'lang' => [
+            'type' => 'select',
+            'label' => 'Language',
+            'options'     => ['en' => 'English', 'nl' => 'Dutch'],
         ],
         'name' => [
             'type'        => 'input',
             'label'       => 'Name',
             'placeholder' => 'Name',
-
         ],
         'email' => [
             'type'        => 'email',
             'label'       => 'E-mail',
-            'placeholder' => 'someone@example.com'
-        ]
+            'placeholder' => 'someone@example.com',
+            'prepend' => '@',
+            'rules' => ['required', 'email']
+        ],
+        'password' => [
+            'type'        => 'password',
+            'label'       => 'Password',
+            'rules' => ['required', 'min:8', 'confirmed']
+        ],
+        'password_confirmation' => [
+            'type'        => 'password',
+            'label'       => 'Password confirmation',
+        ],
     ]
 ];

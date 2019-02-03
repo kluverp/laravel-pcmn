@@ -5,5 +5,6 @@ return [
         'plural' => 'Gebruikers',
         'singular' => 'Gebruiker'
     ],
-    'status' => 'foobar'
+    'description' => 'Manage your PCMN users here',
+    'status' => 'foobar',
 ];
