@@ -67,7 +67,7 @@ class TableConfig
      *
      * @var array
      */
-    private $fields = [];
+    private $form = [];
 
     /**
      * TableConfig constructor.
@@ -121,7 +121,7 @@ class TableConfig
             throw new \Exception('This is not a valid TableConfig title entry');
         }
 
-        return $this->title[$type];
+        return __($this->title[$type]);
     }
 
     /**
@@ -171,7 +171,7 @@ class TableConfig
      */
     public function getFields()
     {
-        return $this->fields;
+        return $this->form;
     }
 
     /**

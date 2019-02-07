@@ -4,7 +4,7 @@ namespace Kluverp\Pcmn;
 
 use Illuminate\Routing\Controller;
 use Kluverp\Pcmn\Lib\Breadcrumb;
-use Kluverp\Pcmn\Lib\Menu;
+use Kluverp\Pcmn\Lib\Navigation;
 use Kluverp\Pcmn\Lib\TableConfig\TableConfigRepository;
 use Kluverp\Pcmn\Lib\Model;
 
@@ -15,31 +15,25 @@ use Kluverp\Pcmn\Lib\Model;
 class BaseController extends Controller
 {
     /**
-     * Controller specific namespace.
-     *
-     * @var string
-     */
-    protected $namespace = '';
-    /**
      * The route namespace.
      *
      * @var string
      */
-    protected $routeNamespace = 'pcmn.';
+    protected $routeNs = 'pcmn.';
 
     /**
      * The view namespace.
      *
      * @var string
      */
-    protected $viewNamespace = 'pcmn::';
+    protected $viewNs = 'pcmn::';
 
     /**
      * The translations namespace.
      *
      * @var string
      */
-    protected $transNamespace = 'pcmn::';
+    protected $transNs = 'pcmn::';
 
     /**
      * The breadcrumbs object.
@@ -64,49 +58,10 @@ class BaseController extends Controller
         $this->tableConfigRepo = app(TableConfigRepository::class);
 
         // load the menu
-        view()->share('menu', (new Menu(config('pcmn.menu'), $this->tableConfigRepo))->getMenu());
+        view()->share('menu', (new Navigation(config('pcmn.menu'), $this->tableConfigRepo))->getMenu());
 
         // init new object
         $this->breadcrumbs = new Breadcrumb();
-    }
-
-    /**
-     * Returns the route namespace. When flag root == true, the namespace is given from root.
-     *
-     * @param string $str
-     * @param bool $root
-     * @return string
-     */
-    protected function routeNamespace($str = '', $root = false)
-    {
-        // from root if you please
-        if ($root) {
-            return $this->routeNamespace . ltrim($str, '.');
-        }
-
-        return $this->routeNamespace . $this->namespace . '.' . ltrim($str, '.');
-    }
-
-    /**
-     * Returns the path to the view namespace.
-     *
-     * @param $str
-     * @return string
-     */
-    protected function viewNamespace($str)
-    {
-        return $this->viewNamespace . $this->namespace . '.' . ltrim($str, '.');
-    }
-
-    /**
-     * Returns the translations namespace.
-     *
-     * @param string $str
-     * @return string
-     */
-    protected function transNamespace($str = '')
-    {
-        return $this->transNamespace . $this->namespace . '.' . ltrim($str, '.');
     }
 
     protected function trans($key)

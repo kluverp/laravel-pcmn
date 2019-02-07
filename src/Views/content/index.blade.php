@@ -12,7 +12,7 @@
 
     @if(!empty($description))
         <p class="lead">
-            {{ $description }}
+            @lang($description)
         </p>
     @endif
 

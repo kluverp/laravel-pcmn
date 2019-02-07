@@ -10,7 +10,7 @@ use Kluverp\Pcmn\Lib\TableConfig\TableConfigRepository;
  * Class Menu
  * @package Kluverp\Pcmn\Lib
  */
-class Menu
+class Navigation
 {
     /**
      * Menu definition from config file. ("/config/pcmn/menu.php")

@@ -2,13 +2,13 @@
 
 return [
     'title' => [
-        'plural'   => 'pcmn::users.title.plural',
+        'plural' => 'pcmn::users.title.plural',
         'singular' => 'pcmn::users.title.singular'
     ],
     'description' => 'pcmn::users.description',
     'permissions' => [
         'create' => true,
-        'read'   => true,
+        'read' => true,
         'update' => true,
         'delete' => true,
     ],
@@ -16,37 +16,37 @@ return [
         'name' => ['sortable' => true, 'searchable' => true],
         'email' => ['sortable' => true, 'searchable' => true]
     ],
-    'fields' => [
-        'status' => [
-            'type'        => 'radio',
-            'label'       => 'Status',
-            'options'     => [] // if left out, source comes from DB table
+    'form' => [
+        'active' => [
+            'type' => 'radio',
+            'label' => 'pcmn::users.form.active',
+            'options' => 'active,name,id' // if left out, source comes from DB table
         ],
         'lang' => [
             'type' => 'select',
-            'label' => 'Language',
-            'options'     => ['en' => 'English', 'nl' => 'Dutch'],
+            'label' => 'pcmn::users.form.lang',
+            'options' => ['en' => 'EN', 'nl' => 'NL'],
         ],
         'name' => [
-            'type'        => 'input',
-            'label'       => 'Name',
+            'type' => 'input',
+            'label' => 'pcmn::users.form.name',
             'placeholder' => 'Name',
         ],
         'email' => [
-            'type'        => 'email',
-            'label'       => 'E-mail',
+            'type' => 'email',
+            'label' => 'pcmn::users.form.email',
             'placeholder' => 'someone@example.com',
             'prepend' => '@',
             'rules' => ['required', 'email']
         ],
         'password' => [
-            'type'        => 'password',
-            'label'       => 'Password',
+            'type' => 'password',
+            'label' => 'pcmn::users.form.password',
             'rules' => ['required', 'min:8', 'confirmed']
         ],
         'password_confirmation' => [
-            'type'        => 'password',
-            'label'       => 'Password confirmation',
+            'type' => 'password',
+            'label' => 'pcmn::users.form.password_confirmation',
         ],
     ]
 ];

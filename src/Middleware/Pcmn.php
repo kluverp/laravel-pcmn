@@ -4,6 +4,7 @@ namespace Kluverp\Pcmn\Middleware;
 
 use Closure;
 use Kluverp\Pcmn\Models\User;
+use App;
 
 class Pcmn
 {
@@ -19,6 +20,7 @@ class Pcmn
         // check if we can login by using session
         if ($user = User::bySession()) {
             view()->share('user', $user);
+            App::setLocale($user->lang);
             return $next($request);
         }
 
@@ -26,12 +28,10 @@ class Pcmn
         if ($token = $request->cookie('remember_token')) {
             if ($user = User::byToken($token)) {
                 view()->share('user', $user);
+                App::setLocale($user->lang);
                 return $next($request);
             }
         }
-
-        // set user language
-        App::setLocale('nl');
 
         // in all other cases, we redirect the user back to login
         return redirect()->route('pcmn.auth.login');
