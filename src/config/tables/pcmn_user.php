@@ -20,6 +20,9 @@ return [
         'active' => [
             'type' => 'radio',
             'label' => 'pcmn::users.form.active',
+            // if array => use directly
+            // if string => pass through translator -> array? use it
+            // otherwise use string as db source: <table>,<labelcol>,<idcol:default to 'id'>
             'options' => 'active,name,id' // if left out, source comes from DB table
         ],
         'lang' => [

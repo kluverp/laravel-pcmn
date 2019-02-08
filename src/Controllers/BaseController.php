@@ -59,9 +59,13 @@ class BaseController extends Controller
 
         // load the menu
         view()->share('menu', (new Navigation(config('pcmn.menu'), $this->tableConfigRepo))->getMenu());
+        view()->share('viewNs', $this->viewNs);
+        view()->share('routeNs', $this->routeNs);
+        view()->share('transNs', $this->transNs);
 
         // init new object
         $this->breadcrumbs = new Breadcrumb();
+
     }
 
     protected function trans($key)

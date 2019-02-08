@@ -8,6 +8,7 @@ use Kluverp\Pcmn\Models\User;
 
 /**
  * Class DashboardController
+ *
  * @package App\Http\Controllers
  */
 class LoginController extends BaseController
@@ -17,7 +18,9 @@ class LoginController extends BaseController
      *
      * @var string
      */
-    protected $namespace = 'auth';
+    protected $viewNs = 'pcmn::auth';
+    protected $transNs = 'pcmn::auth';
+    protected $routeNs = 'pcmn.auth';
 
     /**
      * Load login page.
@@ -26,15 +29,14 @@ class LoginController extends BaseController
      */
     public function index()
     {
-        return view($this->viewNamespace('index'), [
-            'transNamespace' => $this->transNamespace()
-        ]);
+        return view($this->viewNs . '.index');
     }
 
     /**
      * Handle the form submit.
      *
      * @param LoginRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function post(LoginRequest $request)
@@ -46,12 +48,12 @@ class LoginController extends BaseController
             $user->login($request->remember_me);
 
             // redirect user to dashboard
-            return redirect()->route($this->routeNamespace('dashboard', true));
+            return redirect()->route($this->routeNs . '.dashboard', true);
         }
 
         return redirect()
-            ->to(route($this->routeNamespace('login')))
-            ->withAlertDanger(__($this->transNamespace('alerts.failure')))
+            ->to(route($this->routeNs . '.login'))
+            ->withAlertDanger(__($this->transNs . '.alerts.failure'))
             ->withInput();
     }
 
@@ -66,6 +68,6 @@ class LoginController extends BaseController
         session()->forget('pcmn');
 
         // go to login screen
-        return redirect()->route($this->routeNamespace('login'));
+        return redirect()->route($this->routeNs . '.login');
     }
 }

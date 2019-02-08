@@ -15,23 +15,25 @@ class PcmnServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $srcPath = realpath(__DIR__ . '/../');
+
         // publish the config file and assets
         $this->publishes([
-            __DIR__ . '/../config' => config_path('pcmn'),
-            __DIR__ . '/../Assets/' => public_path('vendor/pcmn'),
+            $srcPath . '/config'  => config_path('pcmn'),
+            $srcPath . '/Assets/' => public_path('vendor/pcmn'),
         ], 'public');
 
         // load the routes
-        $this->loadRoutesFrom(__DIR__ . '/../routes.php');
+        $this->loadRoutesFrom($srcPath . '/routes.php');
 
         // load the migrations
-        $this->loadMigrationsFrom(__DIR__ . '/../Migrations');
+        $this->loadMigrationsFrom($srcPath . '/Migrations');
 
         // load views
-        $this->loadViewsFrom(__DIR__ . '/../Views', 'pcmn');
+        $this->loadViewsFrom($srcPath . '/Views', 'pcmn');
 
         // load translations
-        $this->loadTranslationsFrom(__DIR__ . '/../Translations', 'pcmn');
+        $this->loadTranslationsFrom($srcPath . '/Translations', 'pcmn');
 
         // load commands
         if ($this->app->runningInConsole()) {
